@@ -1,15 +1,5 @@
-import jsdom from 'jsdom';
-const { JSDOM } = jsdom;
-const DOMParser = new JSDOM().window.DOMParser;
-const parser = new DOMParser();
-
+import { elementFromString } from '../helpers/tests.js';
 import { videoBlock, imageBlock } from './blocks.js';
-
-const elementFromString = (value) => {
-  const elem = parser.parseFromString(value, 'text/html').body
-    .firstElementChild;
-  return elem;
-};
 
 describe('videoBlock processing', () => {
   test('Internal video', () => {
