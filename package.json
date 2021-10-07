@@ -1,0 +1,54 @@
+{
+  "name": "@plone/blocks-conversion-tool",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:plone/blocks-conversion-tool.git"
+  },
+  "bugs": {
+    "url": "https://github.com/plone/blocks-conversion-tool/issues"
+  },
+  "homepage": "https://plone.org",
+  "keywords": [
+    "volto",
+    "plone",
+    "react"
+  ],
+  "scripts": {
+    "start": "node ./src/server.js",
+    "prettier": "./node_modules/.bin/prettier --single-quote --check '**/*.{js,json}'",
+    "prettier:fix": "./node_modules/.bin/prettier --single-quote --write '**/*.{js,json}'",
+    "lint": "./node_modules/eslint/bin/eslint.js --max-warnings=0 'src/**/*.js'",
+    "lint:fix": "./node_modules/eslint/bin/eslint.js --fix 'src/**/*.js'"
+  },
+  "dependencies": {
+    "cookie-parser": "~1.4.4",
+    "debug": "~2.6.9",
+    "draft-js": "^0.11.7",
+    "draft-js-import-html": "^1.4.1",
+    "express": "~4.16.1",
+    "express-validator": "^6.12.2",
+    "jsdom": "^17.0.0",
+    "morgan": "~1.9.1",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "slate": "^0.66.5",
+    "slate-hyperscript": "^0.66.0"
+  },
+  "devDependencies": {
+    "eslint": "^7.32.0",
+    "eslint-config-prettier": "6.11.0",
+    "eslint-plugin-import": "^2.24.2",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-prettier": "^4.0.0",
+    "eslint-plugin-promise": "^5.1.0",
+    "prettier": "^2.4.1"
+  },
+  "prettier": {
+    "trailingComma": "all",
+    "singleQuote": true
+  }
+}
