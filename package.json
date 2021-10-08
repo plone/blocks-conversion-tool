@@ -40,6 +40,9 @@
     "slate-hyperscript": "^0.66.0"
   },
   "devDependencies": {
+    "@commitlint/cli": "^13.2.0",
+    "@commitlint/config-conventional": "^13.2.0",
+    "@release-it/conventional-changelog": "^3.3.0",
     "eslint": "^7.32.0",
     "eslint-config-prettier": "6.11.0",
     "eslint-plugin-import": "^2.24.2",
@@ -48,6 +51,7 @@
     "eslint-plugin-promise": "^5.1.0",
     "jest": "^27.2.4",
     "prettier": "^2.4.1",
+    "release-it": "^14.11.6",
     "supertest": "^6.1.6"
   },
   "prettier": {
@@ -56,5 +60,42 @@
   },
   "jest": {
     "testEnvironment": "./src/tests/custom-test-env.js"
+  },
+  "release-it": {
+    "npm": {
+      "publish": true
+    },
+    "git": {
+      "commitMessage": "chore: release v${version}"
+    },
+    "github": {
+      "release": true
+    },
+    "plugins": {
+      "@release-it/conventional-changelog": {
+        "infile": "CHANGELOG.md",
+        "preset": {
+          "name": "conventionalcommits",
+          "types": [
+            {
+              "type": "feat",
+              "section": "Features"
+            },
+            {
+              "type": "fix",
+              "section": "Bug Fixes"
+            },
+            {
+              "type": "refactor",
+              "section": "Changes"
+            },
+            {
+              "type": "chore",
+              "section": "Maintenance"
+            }
+          ]
+        }
+      }
+    }
   }
 }

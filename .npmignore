@@ -1,0 +1,15 @@
+.dockerignore
+.DS_Store
+.gitignore
+.history
+.vscode/
+*.log
+*.swp
+build
+dist
+Dockerfile
+logs
+Makefile
+node_modules
+npm-debug.log*
+yarn-error.log
