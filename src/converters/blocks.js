@@ -4,7 +4,7 @@ import { getYTVideoId } from '../helpers/video.js';
 const imageBlock = (elem) => {
   const block = {
     '@type': 'image',
-    src: elem.src,
+    url: elem.src,
     alt: elem.alt,
     title: elem.title,
   };

@@ -37,7 +37,7 @@ describe('imageBlock processing', () => {
     );
     const result = imageBlock(elem);
     expect(result['@type']).toBe('image');
-    expect(result['src']).toBe(
+    expect(result['url']).toBe(
       'https://plone.org/news/item/@@images/44ae2493-53fb-4221-98dc-98fa38d6851a.jpeg',
     );
     expect(result['title']).toBe('A Picture');
@@ -51,7 +51,7 @@ describe('imageBlock processing', () => {
     );
     const result = imageBlock(elem);
     expect(result['@type']).toBe('image');
-    expect(result['src']).toBe(
+    expect(result['url']).toBe(
       'https://plone.org/news/item/@@images/image/thumb',
     );
     expect(result['size']).toBe('s');
