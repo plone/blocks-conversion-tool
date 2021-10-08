@@ -35,6 +35,21 @@ format-lint: ## Format Code with Lint
 .PHONY: format
 format: format-prettier format-lint ## Format the codebase according to our standards
 
+.PHONY: check-prettier
+check-prettier: ## Check if code was not prettified
+	yarn run prettier
+
+.PHONY: check-lint
+check-lint: ## Check if code needs to be linted
+	yarn run lint
+
+.PHONY: test
+test: ## Test code
+	yarn test
+
+.PHONY: test-all
+test-all: check-prettier check-lint test  ## Check lint and test code
+
 .PHONY: build-image
 build-image:  ## Build Docker Image
 	@docker build . -t $(IMAGE_NAME) -f Dockerfile

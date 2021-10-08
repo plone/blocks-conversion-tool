@@ -1,56 +1,41 @@
-const getYTVideoId = (url) => {
-  let id = '';
-  url = url
-    .replace(/(>|<)/gi, '')
-    .split(/(vi\/|v=|\/v\/|youtu\.be\/|\/embed\/)/);
-  if (url[2] !== undefined) {
-    id = url[2].split(/[^0-9a-z_-]/i);
-    id = id[0];
-  }
-  return id;
-};
+import { alignFromClassName, scaleFromUrl } from '../helpers/image.js';
+import { getYTVideoId } from '../helpers/video.js';
 
 const imageBlock = (elem) => {
   const block = {
     '@type': 'image',
+    url: elem.src,
     alt: elem.alt,
     title: elem.title,
   };
-  const src = elem.src;
-  let scales = null;
-  if (src.indexOf('@@images/image') !== -1) {
-    scales = src.match(/@@images\/image\/(.*)/);
-  } else if (src.indexOf('/image_') !== -1) {
-    scales = src.match(/image_(.*)/);
-  }
+
   if (elem.dataset.href != null) {
     block.href = elem.dataset.href;
   }
-  if (elem.className.indexOf('image-left') !== -1) {
-    block.align = 'left';
-    block.size = 'm';
-  } else if (elem.className.indexOf('image-right') !== -1) {
-    block.align = 'right';
-    block.size = 'm';
-  } else if (elem.className.indexOf('image-inline') !== -1) {
-    block.align = 'center';
-    block.size = 'l';
-  } else {
-    block.align = 'center';
-    block.size = 'l';
+
+  switch (alignFromClassName(elem.className)) {
+    case 'left':
+      block.align = 'left';
+      block.size = 'm';
+      break;
+    case 'right':
+      block.align = 'right';
+      block.size = 'm';
+      break;
+    case 'center':
+      block.align = 'center';
+      block.size = 'l';
+      break;
   }
 
-  if (scales !== null) {
-    const scale = scales[1];
+  const scale = scaleFromUrl(elem.src);
+  if (scale !== null) {
     switch (scale) {
       case 'large':
-      case 'image_large':
         block.size = 'l';
         break;
       case 'thumb':
-      case 'image_thumb':
       case 'tile':
-      case 'image_tile':
         block.size = 's';
         break;
       default:
@@ -58,7 +43,6 @@ const imageBlock = (elem) => {
         break;
     }
   }
-  block.url = src;
   return block;
 };
 
@@ -89,4 +73,4 @@ const videoBlock = (elem) => {
   return block;
 };
 
-export { iframeBlock, imageBlock, videoBlock };
+export { iframeBlock, imageBlock, videoBlock, getYTVideoId };

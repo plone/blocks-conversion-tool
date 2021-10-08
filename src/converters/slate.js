@@ -18,20 +18,29 @@ const deserialize = (el) => {
   switch (el.nodeName) {
     case 'BR':
       return '\n';
+    case 'CODE':
     case 'PRE':
       return jsx('element', { type: 'code' }, children);
     case 'BLOCKQUOTE':
       return jsx('element', { type: 'quote' }, children);
-    case 'CODE':
-      return jsx('element', { type: 'code' }, children);
     case 'SPAN':
       return jsx('element', { type: 'span' }, children);
     case 'H1':
       return jsx('element', { type: 'h1' }, children);
     case 'H2':
       return jsx('element', { type: 'h2' }, children);
+    case 'S':
+      return jsx('element', { type: 's' }, children);
+    case 'STRONG':
     case 'B':
       return jsx('element', { type: 'strong' }, children);
+    case 'EM':
+    case 'I':
+      return jsx('element', { type: 'em' }, children);
+    case 'SUB':
+      return jsx('element', { type: 'sub' }, children);
+    case 'SUP':
+      return jsx('element', { type: 'sup' }, children);
     case 'OL':
       return jsx('element', { type: 'ol' }, children);
     case 'UL':
@@ -45,6 +54,7 @@ const deserialize = (el) => {
           type: 'a',
           url: el.getAttribute('href'),
           title: el.getAttribute('title'),
+          target: el.getAttribute('target'),
         },
         children,
       );
