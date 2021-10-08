@@ -1,4 +1,4 @@
-name: Code analysis checks
+name: Unit tests
 on: [push]
 jobs:
   build:
@@ -32,10 +32,6 @@ jobs:
       - name: Install dependencies
         run: yarn install --frozen-lockfile
 
-      # Validate code linting
-      - name: Code linting
-        run: yarn lint
-
-      # Validate code prettier
-      - name: Code prettier
-        run: yarn prettier
+      # Unit tests
+      - name: Unit tests
+        run: yarn test
