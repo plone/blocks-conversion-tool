@@ -62,5 +62,4 @@ describe('convertFromHTML parsing html', () => {
       );
     });
   });
-
 });
