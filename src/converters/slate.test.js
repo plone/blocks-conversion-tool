@@ -133,7 +133,7 @@ describe('slateTextBlock processing a strong', () => {
   });
 });
 
-describe('slateTextBlock processing a strikeout', () => {
+describe('slateTextBlock processing a strike', () => {
   const elem = elementFromString('<s>Hello world!</s>');
 
   test('will have a nested structure in the value', () => {
