@@ -17,6 +17,9 @@
     "plone",
     "react"
   ],
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "start": "node ./src/server.js",
     "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
