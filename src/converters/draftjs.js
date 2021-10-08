@@ -17,16 +17,17 @@ const FromHTMLCustomBlockFn = (element) => {
 };
 
 const draftTableBlock = (elem) => {
+  const html = elem.outerHTML;
   const block = {};
   let value = '';
   block['@type'] = 'html';
   // Import tables as standard HTML content
-  value = elem.outerHTML.replace('<table>', '<table class="ui celled table">');
-  value = elem.replace(
+  value = html.replace('<table>', '<table class="ui celled table">');
+  value = value.replace(
     '<table class="align--justify">',
     '<table class="ui celled table">',
   );
-  value = elem.replace(
+  value = value.replace(
     '<table class="Table">',
     '<table class="ui celled table">',
   );
