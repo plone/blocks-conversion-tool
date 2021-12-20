@@ -1,3 +1,10 @@
+## [0.2.0](https://github.com/plone/blocks-conversion-tool/compare/0.1.0...0.2.0) (2021-12-20)
+
+
+### Features
+
+* Support parsing video element with inner source element ([b1baa76](https://github.com/plone/blocks-conversion-tool/commit/b1baa76c5626b7608dd07f7cb5c03aa12d72fcb3))
+
 ## 0.1.0 (2021-10-08)
 
 
