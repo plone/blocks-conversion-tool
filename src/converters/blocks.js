@@ -60,7 +60,14 @@ const iframeBlock = (elem) => {
 };
 
 const videoBlock = (elem) => {
-  const src = elem.src;
+  let src = elem.src;
+  if (src === '') {
+    // If src is empty search for the first source element
+    const child = elem.firstElementChild;
+    if (child.tagName === 'SOURCE') {
+      src = child.src;
+    }
+  }
   const youtubeId = getYTVideoId(src);
   const block = {
     '@type': 'video',

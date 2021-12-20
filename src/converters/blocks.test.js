@@ -28,6 +28,15 @@ describe('videoBlock processing', () => {
     expect(result['@type']).toBe('video');
     expect(result['url']).toBe('https://youtu.be/jn4zGVJq9m0');
   });
+
+  test('External video (Youtube) from source element', () => {
+    const elem = elementFromString(
+      '<video width="170" height="85"><source src="https://youtu.be/47BC9R2vD2w"></video>',
+    );
+    const result = videoBlock(elem);
+    expect(result['@type']).toBe('video');
+    expect(result['url']).toBe('https://youtu.be/47BC9R2vD2w');
+  });
 });
 
 describe('imageBlock processing', () => {
