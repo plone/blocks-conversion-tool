@@ -7,7 +7,13 @@ SHELL:=bash
 .DELETE_ON_ERROR:
 MAKEFLAGS+=--warn-undefined-variables
 MAKEFLAGS+=--no-builtin-rules
-IMAGE_NAME=plone/blocks-conversion-tool:latest
+
+define GetFromPkg
+$(shell node -p "require('./package.json').$(1)")
+endef
+
+IMAGE_TAG:=$(call GetFromPkg,version)
+IMAGE_NAME=plone/blocks-conversion-tool
 
 # Add the following 'help' target to your Makefile
 # And add help text after each target name starting with '\#\#'
@@ -52,12 +58,17 @@ test-all: check-prettier check-lint test  ## Check lint and test code
 
 .PHONY: build-image
 build-image:  ## Build Docker Image
-	@docker build . -t $(IMAGE_NAME) -f Dockerfile
+	@echo "Building $(IMAGE_NAME):$(IMAGE_TAG)"
+	@docker build . -t $(IMAGE_NAME):$(IMAGE_TAG) -f Dockerfile
 
 .PHONY: push-image
 push-image:  ## Publish Docker Image
-	@docker push $(IMAGE_NAME)
+	@echo "Pushing $(IMAGE_NAME):$(IMAGE_TAG)"
+	@docker push $(IMAGE_NAME):$(IMAGE_TAG)
+	@docker tag $(IMAGE_NAME):$(IMAGE_TAG) $(IMAGE_NAME):latest
+	@echo "Pushing $(IMAGE_NAME):latest"
+	@docker push $(IMAGE_NAME):latest
 
 .PHONY: release-image
 release-image: build-image push-image ## Build and push the image to docker hub
-	@echo "Releasing $(IMAGE_NAME)"
+	@echo "Released $(IMAGE_NAME)"
