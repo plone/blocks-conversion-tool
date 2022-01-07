@@ -53,3 +53,11 @@ test-all: check-prettier check-lint test  ## Check lint and test code
 .PHONY: build-image
 build-image:  ## Build Docker Image
 	@docker build . -t $(IMAGE_NAME) -f Dockerfile
+
+.PHONY: push-image
+push-image:  ## Publish Docker Image
+	@docker push $(IMAGE_NAME)
+
+.PHONY: release-image
+release-image: build-image push-image ## Build and push the image to docker hub
+	@echo "Releasing $(IMAGE_NAME)"
