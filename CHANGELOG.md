@@ -1,3 +1,10 @@
+### [0.3.1](https://github.com/plone/blocks-conversion-tool/compare/0.3.0...0.3.1) (2022-01-07)
+
+
+### Bug Fixes
+
+* Deal with slateTable cells with nested elements ([7eff6ad](https://github.com/plone/blocks-conversion-tool/commit/7eff6ad4d1a0575bb8b13a37225242dd9bf68adc))
+
 ## [0.3.0](https://github.com/plone/blocks-conversion-tool/compare/0.2.0...0.3.0) (2022-01-07)
 
 
