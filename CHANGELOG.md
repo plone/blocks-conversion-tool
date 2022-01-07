@@ -1,3 +1,15 @@
+## [0.3.0](https://github.com/plone/blocks-conversion-tool/compare/0.2.0...0.3.0) (2022-01-07)
+
+
+### Features
+
+* Improve slateTable block conversion ([dd71acd](https://github.com/plone/blocks-conversion-tool/commit/dd71acdc6aebf32dd40c359892f6268ce464e1fe))
+
+
+### Maintenance
+
+* Add release-image to Makefile ([fda42be](https://github.com/plone/blocks-conversion-tool/commit/fda42be58c49e3e9bcdb9a66b56f434db5792f87))
+
 ## [0.2.0](https://github.com/plone/blocks-conversion-tool/compare/0.1.0...0.2.0) (2021-12-20)
 
 
