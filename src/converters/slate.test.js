@@ -271,6 +271,8 @@ describe('slateTableBlock processing a simple table', () => {
     expect(rows[0].cells).toHaveLength(1);
     expect(rows[0].cells[0].type).toBe('data');
     expect(rows[0].cells[0].value).toHaveLength(1);
-    expect(rows[0].cells[0].value[0]).toBe('A value');
+    const value = rows[0].cells[0].value[0];
+    expect(value['type']).toBe('p');
+    expect(value['children'][0]['text']).toBe('A value');
   });
 });

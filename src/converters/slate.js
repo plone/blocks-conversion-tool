@@ -63,11 +63,20 @@ const deserialize = (el) => {
   }
 };
 
-const createCell = (type, value) => ({
-  key: getId(),
-  type: type,
-  value: value,
-});
+const createCell = (type, rawValue) => {
+  const value = rawValue.map(function (el) {
+    if (Array.isArray(el)) {
+      return el;
+    } else {
+      return jsx('element', { type: 'p' }, el);
+    }
+  });
+  return {
+    key: getId(),
+    type: type,
+    value: value,
+  };
+};
 
 const createTable = (rows) => ({
   basic: false,
