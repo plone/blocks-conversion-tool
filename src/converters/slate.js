@@ -65,10 +65,11 @@ const deserialize = (el) => {
 
 const createCell = (type, rawValue) => {
   const value = rawValue.map(function (el) {
-    if (Array.isArray(el)) {
-      return el;
-    } else {
+    if (typeof el === 'string') {
       return jsx('element', { type: 'p' }, el);
+
+    } else {
+      return el;
     }
   });
   return {

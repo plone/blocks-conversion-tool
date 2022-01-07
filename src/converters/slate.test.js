@@ -276,3 +276,27 @@ describe('slateTableBlock processing a simple table', () => {
     expect(value['children'][0]['text']).toBe('A value');
   });
 });
+
+describe('slateTableBlock processing a table with a link', () => {
+  const elem = elementFromString(
+    '<table><tr><td><a href="https://plone.org">Plone</a></td></tr></table>',
+  );
+
+  test('will have @type as slateTable', () => {
+    const result = slateTableBlock(elem);
+    expect(result['@type']).toBe('slateTable');
+  });
+
+  test('will have 1 row with 1 cell with link value', () => {
+    const result = slateTableBlock(elem);
+    const rows = result.table.rows;
+    expect(rows).toHaveLength(1);
+    expect(rows[0].cells).toHaveLength(1);
+    expect(rows[0].cells[0].type).toBe('data');
+    expect(rows[0].cells[0].value).toHaveLength(1);
+    const value = rows[0].cells[0].value[0];
+    expect(value['type']).toBe('a');
+    expect(value['url']).toBe('https://plone.org');
+    expect(value['children'][0]['text']).toBe('Plone');
+  });
+});
