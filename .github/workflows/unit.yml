@@ -34,4 +34,4 @@ jobs:
 
       # Unit tests
       - name: Unit tests
-        run: yarn test
+        run: yarn test:ci
