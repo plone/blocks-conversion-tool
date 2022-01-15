@@ -69,7 +69,7 @@ describe('slateTextBlock processing a blockquote block', () => {
   test('will have a nested structure in the value', () => {
     const result = slateTextBlock(elem);
     const valueElement = result.value[0];
-    expect(valueElement['type']).toBe('quote');
+    expect(valueElement['type']).toBe('blockquote');
     const nestedValueElement = valueElement.children[0];
     expect(nestedValueElement['type']).toBe('p');
     expect(nestedValueElement['children'][0]['text']).toContain(
@@ -238,10 +238,11 @@ describe('slateTextBlock processing a link', () => {
   test('will have a nested structure in the value', () => {
     const result = slateTextBlock(elem);
     const valueElement = result.value[0];
-    expect(valueElement['type']).toBe('a');
-    expect(valueElement['url']).toBe('https://plone.org/');
-    expect(valueElement['title']).toBe('Plone website');
-    expect(valueElement['target']).toBe('_blank');
+    expect(valueElement['type']).toBe('link');
+    console.log(valueElement);
+    expect(valueElement['data']['url']).toBe('https://plone.org/');
+    expect(valueElement['data']['title']).toBe('Plone website');
+    expect(valueElement['data']['target']).toBe('_blank');
     expect(valueElement['children'][0]['text']).toBe('Welcome to Plone!');
   });
 });
@@ -295,8 +296,8 @@ describe('slateTableBlock processing a table with a link', () => {
     expect(rows[0].cells[0].type).toBe('data');
     expect(rows[0].cells[0].value).toHaveLength(1);
     const value = rows[0].cells[0].value[0];
-    expect(value['type']).toBe('a');
-    expect(value['url']).toBe('https://plone.org');
+    expect(value['type']).toBe('link');
+    expect(value['data']['url']).toBe('https://plone.org');
     expect(value['children'][0]['text']).toBe('Plone');
   });
 });
