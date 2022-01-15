@@ -2,6 +2,27 @@ import { jsx } from 'slate-hyperscript';
 
 const getId = () => Math.floor(Math.random() * Math.pow(2, 24)).toString(32);
 
+const simpleLinkDeserializer = (el) => {
+  let parent = el;
+
+  let children = Array.from(parent.childNodes)
+    .map((el) => deserialize(el))
+    .flat();
+
+  if (!children.length) children = [''];
+
+  const attrs = {
+    type: 'link',
+    data: {
+      url: el.getAttribute('href'),
+      title: el.getAttribute('title'),
+      target: el.getAttribute('target'),
+    },
+  };
+
+  return jsx('element', attrs, children);
+};
+
 const deserialize = (el) => {
   if (el.nodeType === 3) {
     return el.textContent;
@@ -48,16 +69,7 @@ const deserialize = (el) => {
     case 'LI':
       return jsx('element', { type: 'li' }, children);
     case 'A':
-      return jsx(
-        'element',
-        {
-          type: 'a',
-          url: el.getAttribute('href'),
-          title: el.getAttribute('title'),
-          target: el.getAttribute('target'),
-        },
-        children,
-      );
+      return simpleLinkDeserializer(el);
     default:
       return jsx('element', { type: 'p' }, children);
   }
