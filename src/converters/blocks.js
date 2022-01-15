@@ -2,9 +2,12 @@ import { alignFromClassName, scaleFromUrl } from '../helpers/image.js';
 import { getYTVideoId } from '../helpers/video.js';
 
 const imageBlock = (elem) => {
+  // strip /@@images/image if present
+  const url = elem.src.split('/@@images')[0];
+
   const block = {
     '@type': 'image',
-    url: elem.src,
+    url,
     alt: elem.alt,
     title: elem.title,
   };

@@ -22,7 +22,7 @@
   },
   "scripts": {
     "start": "node ./src/server.js",
-    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js --watch --watchAll",
     "prettier": "./node_modules/.bin/prettier --single-quote --check '**/*.{js,json}'",
     "prettier:fix": "./node_modules/.bin/prettier --single-quote --write '**/*.{js,json}'",
     "lint": "./node_modules/eslint/bin/eslint.js --max-warnings=0 'src/**/*.js'",
