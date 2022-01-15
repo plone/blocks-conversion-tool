@@ -46,9 +46,7 @@ describe('imageBlock processing', () => {
     );
     const result = imageBlock(elem);
     expect(result['@type']).toBe('image');
-    expect(result['url']).toBe(
-      'https://plone.org/news/item/@@images/44ae2493-53fb-4221-98dc-98fa38d6851a.jpeg',
-    );
+    expect(result['url']).toBe('https://plone.org/news/item');
     expect(result['title']).toBe('A Picture');
     expect(result['alt']).toBe('Picture of a person');
     expect(result['size']).toBe('m');
@@ -60,10 +58,26 @@ describe('imageBlock processing', () => {
     );
     const result = imageBlock(elem);
     expect(result['@type']).toBe('image');
-    expect(result['url']).toBe(
-      'https://plone.org/news/item/@@images/image/thumb',
-    );
+    expect(result['url']).toBe('https://plone.org/news/item');
     expect(result['size']).toBe('s');
     expect(result['align']).toBe('right');
+  });
+  test('Image with no @@images present', () => {
+    const elem = elementFromString(
+      '<img src="https://plone.org/news/item" title="A Picture" alt="Picture of a person" class="image-right">',
+    );
+    const result = imageBlock(elem);
+    expect(result['@type']).toBe('image');
+    expect(result['url']).toBe('https://plone.org/news/item');
+  });
+  test('Image with resolveuid present', () => {
+    const elem = elementFromString(
+      '<img src="../resolveuid/7c6a1b0a0d2f40ffb6a4c73fd67b185d" title="A Picture" alt="Picture of a person" class="image-right">',
+    );
+    const result = imageBlock(elem);
+    expect(result['@type']).toBe('image');
+    expect(result['url']).toBe(
+      '../resolveuid/7c6a1b0a0d2f40ffb6a4c73fd67b185d',
+    );
   });
 });
