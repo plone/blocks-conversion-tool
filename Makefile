@@ -56,6 +56,16 @@ test: ## Test code
 .PHONY: test-all
 test-all: check-prettier check-lint test  ## Check lint and test code
 
+.PHONY: release-package-dry-run
+release-package-dry-run:  ## Dry run of releasing this package to npm and Github
+	@echo "Release package @plone/blocks-conversion-tool (DRY RUN)"
+	@npx release-it --dry-run
+
+.PHONY: release-package
+release-package:  ## Release this package to npm and Github
+	@echo "Release package @plone/blocks-conversion-tool"
+	@npx release-it
+
 .PHONY: build-image
 build-image:  ## Build Docker Image
 	@echo "Building $(IMAGE_NAME):$(IMAGE_TAG)"
