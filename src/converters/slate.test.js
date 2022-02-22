@@ -2,23 +2,72 @@ import { elementFromString } from '../helpers/dom.js';
 import { slateTableBlock, slateTextBlock } from './slate.js';
 
 describe('slateTextBlock processing a paragraph', () => {
-  const elem = elementFromString('<p>Hello world!</p>');
+  describe('with a simple text', () => {
+    const elem = elementFromString('<p>Hello world!</p>');
 
-  test('will have @type as slate', () => {
-    const result = slateTextBlock(elem);
-    expect(result['@type']).toBe('slate');
+    test('will have @type as slate', () => {
+      const result = slateTextBlock(elem);
+      expect(result['@type']).toBe('slate');
+    });
+
+    test('will extract the text from the element', () => {
+      const result = slateTextBlock(elem);
+      expect(result.plaintext).toBe('Hello world!');
+    });
+
+    test('will have a nested structure in the value', () => {
+      const result = slateTextBlock(elem);
+      const valueElement = result.value[0];
+      expect(valueElement['type']).toBe('p');
+      expect(valueElement['children'][0]['text']).toBe('Hello world!');
+    });
   });
 
-  test('will extract the text from the element', () => {
-    const result = slateTextBlock(elem);
-    expect(result.plaintext).toBe('Hello world!');
-  });
+  describe('with a nested structure of elements', () => {
+    const elem = elementFromString(
+      '<p><strong>Arrival by car:</strong> A 1 Autobahn network (East and West) easily accessible from all directions (toll sticker - compulsory „Vignette“ - required on all motorways!) to St. Pölten then take the  <span class="renderable-component">L5122 till Neidling </span></p>',
+    );
 
-  test('will have a nested structure in the value', () => {
-    const result = slateTextBlock(elem);
-    const valueElement = result.value[0];
-    expect(valueElement['type']).toBe('p');
-    expect(valueElement['children'][0]['text']).toBe('Hello world!');
+    test('will have @type as slate', () => {
+      const result = slateTextBlock(elem);
+      expect(result['@type']).toBe('slate');
+    });
+
+    test('will extract the text from the element', () => {
+      const result = slateTextBlock(elem);
+      expect(result.plaintext).toBe(
+        'Arrival by car: A 1 Autobahn network (East and West) easily accessible from all directions (toll sticker - compulsory „Vignette“ - required on all motorways!) to St. Pölten then take the  L5122 till Neidling ',
+      );
+    });
+
+    test('will have a nested structure in the value with 2 elements', () => {
+      const result = slateTextBlock(elem);
+      const valueElement = result.value[0];
+      expect(valueElement['type']).toBe('p');
+      expect(valueElement.children).toHaveLength(2);
+    });
+
+    test('will have a nested structure, and the first element of the value will be a p', () => {
+      const result = slateTextBlock(elem);
+      const valueElement = result.value[0].children[0];
+      expect(valueElement['type']).toBe('span');
+      expect(valueElement.children).toHaveLength(2);
+      expect(valueElement.children[0]['type']).toBe('strong');
+      expect(valueElement.children[0]['children'][0]['text']).toBe(
+        'Arrival by car:',
+      );
+      expect(valueElement.children[1]['text']).toContain(
+        '1 Autobahn network (East and West) easily accessible',
+      );
+    });
+
+    test('will have a nested structure, and the first element of the value will be a span', () => {
+      const result = slateTextBlock(elem);
+      const valueElement = result.value[0].children[1];
+      expect(valueElement['type']).toBe('span');
+      expect(valueElement.children).toHaveLength(1);
+      expect(valueElement.children[0]['text']).toBe('L5122 till Neidling ');
+    });
   });
 });
 

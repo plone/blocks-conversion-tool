@@ -22,6 +22,7 @@ const isWhitespace = (c) => {
 };
 
 const createEmptyParagraph = () => jsx('element', { type: 'p' }, []);
+const createDefaultBlock = (node) => jsx('element', { type: 'span' }, [node]);
 
 function normalizeBlockNodes(children) {
   const nodes = [];
