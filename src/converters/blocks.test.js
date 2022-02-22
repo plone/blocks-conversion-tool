@@ -1,4 +1,4 @@
-import { elementFromString } from '../helpers/tests.js';
+import { elementFromString } from '../helpers/dom.js';
 import { videoBlock, imageBlock } from './blocks.js';
 
 describe('videoBlock processing', () => {

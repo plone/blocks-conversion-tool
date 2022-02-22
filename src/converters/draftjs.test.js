@@ -1,4 +1,4 @@
-import { elementFromString } from '../helpers/tests.js';
+import { elementFromString } from '../helpers/dom.js';
 import { draftTableBlock, draftTextBlock } from './draftjs.js';
 
 describe('draftTextBlock processing a paragraph', () => {

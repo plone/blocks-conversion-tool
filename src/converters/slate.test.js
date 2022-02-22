@@ -1,4 +1,4 @@
-import { elementFromString } from '../helpers/tests.js';
+import { elementFromString } from '../helpers/dom.js';
 import { slateTableBlock, slateTextBlock } from './slate.js';
 
 describe('slateTextBlock processing a paragraph', () => {
@@ -22,8 +22,23 @@ describe('slateTextBlock processing a paragraph', () => {
   });
 });
 
-describe('slateTextBlock processing a pre block', () => {
-  const elem = elementFromString('<pre>import this</pre>');
+describe('slateTextBlock processing a simple pre block', () => {
+  const elem = elementFromString(
+    '<pre>Plone Foundation: https://plone.org/</pre>',
+  );
+
+  test('will have a nested structure in the value', () => {
+    const result = slateTextBlock(elem);
+    const valueElement = result.value[0];
+    expect(valueElement['type']).toBe('pre');
+    expect(valueElement['children'][0]['text']).toBe(
+      'Plone Foundation: https://plone.org/',
+    );
+  });
+});
+
+describe('slateTextBlock processing a pre block with nested code element', () => {
+  const elem = elementFromString('<pre><code>import this</code></pre>');
 
   test('will have a nested structure in the value', () => {
     const result = slateTextBlock(elem);
@@ -79,13 +94,56 @@ describe('slateTextBlock processing a blockquote block', () => {
 });
 
 describe('slateTextBlock processing a span', () => {
-  const elem = elementFromString('<span>Hello world!</span>');
-
-  test('will have a nested structure in the value', () => {
+  test('with a text value', () => {
+    const elem = elementFromString('<span>Hello world!</span>');
     const result = slateTextBlock(elem);
     const valueElement = result.value[0];
     expect(valueElement['type']).toBe('span');
     expect(valueElement['children'][0]['text']).toBe('Hello world!');
+  });
+
+  test('with an empty text value', () => {
+    const elem = elementFromString('<span>\n</span>');
+    const result = slateTextBlock(elem);
+    const valueElement = result.value[0];
+    expect(valueElement['text']).toBe(' ');
+  });
+
+  test('with other inline elements', () => {
+    const elem = elementFromString(
+      '<span>Hello <strong>world</strong>!</span>',
+    );
+    const result = slateTextBlock(elem);
+    const valueElement = result.value[0];
+    expect(valueElement['type']).toBe('span');
+    expect(valueElement['children'][0]['text']).toBe('Hello ');
+    expect(valueElement['children'][1]['type']).toBe('strong');
+    expect(valueElement['children'][1]['children'][0]['text']).toBe('world');
+    expect(valueElement['children'][2]['text']).toBe('!');
+  });
+
+  test('with google docs style for sup', () => {
+    const elem = elementFromString(
+      '<span style="vertical-align:sup">Hello world!</span>',
+    );
+    const result = slateTextBlock(elem);
+    const valueElement = result.value[0];
+    expect(valueElement['type']).toBe('span');
+    const supElement = valueElement.children[0];
+    expect(supElement['type']).toBe('sup');
+    expect(supElement['children'][0]['text']).toBe('Hello world!');
+  });
+
+  test('with google docs style for sub', () => {
+    const elem = elementFromString(
+      '<span style="vertical-align:sub">Hello world!</span>',
+    );
+    const result = slateTextBlock(elem);
+    const valueElement = result.value[0];
+    expect(valueElement['type']).toBe('span');
+    const supElement = valueElement.children[0];
+    expect(supElement['type']).toBe('sub');
+    expect(supElement['children'][0]['text']).toBe('Hello world!');
   });
 });
 
@@ -239,7 +297,6 @@ describe('slateTextBlock processing a link', () => {
     const result = slateTextBlock(elem);
     const valueElement = result.value[0];
     expect(valueElement['type']).toBe('link');
-    console.log(valueElement);
     expect(valueElement['data']['url']).toBe('https://plone.org/');
     expect(valueElement['data']['title']).toBe('Plone website');
     expect(valueElement['data']['target']).toBe('_blank');
@@ -299,5 +356,42 @@ describe('slateTableBlock processing a table with a link', () => {
     expect(value['type']).toBe('link');
     expect(value['data']['url']).toBe('https://plone.org');
     expect(value['children'][0]['text']).toBe('Plone');
+  });
+});
+
+describe('slateTableBlock processing a table with a link', () => {
+  const elem = elementFromString(
+    '<table><tr><td>Plone <a href="https://plone.org">site</a></td></tr></table>',
+  );
+
+  test('will have @type as slateTable', () => {
+    const result = slateTableBlock(elem);
+    expect(result['@type']).toBe('slateTable');
+  });
+
+  test('will have 1 row with 1 cell with 2 children values', () => {
+    const result = slateTableBlock(elem);
+    const rows = result.table.rows;
+    expect(rows).toHaveLength(1);
+    expect(rows[0].cells).toHaveLength(1);
+    expect(rows[0].cells[0].type).toBe('data');
+    expect(rows[0].cells[0].value).toHaveLength(2);
+  });
+
+  test('first value is a text', () => {
+    const result = slateTableBlock(elem);
+    const rows = result.table.rows;
+    let value = rows[0].cells[0].value[0];
+    expect(value['type']).toBe('p');
+    expect(value['children'][0]['text']).toBe('Plone ');
+  });
+
+  test('second value is the link', () => {
+    const result = slateTableBlock(elem);
+    const rows = result.table.rows;
+    let value = rows[0].cells[0].value[1];
+    expect(value['type']).toBe('link');
+    expect(value['data']['url']).toBe('https://plone.org');
+    expect(value['children'][0]['text']).toBe('site');
   });
 });
