@@ -194,9 +194,14 @@ const htmlTagsToSlate = {
   SUB: blockTagDeserializer('sub'),
   SUP: blockTagDeserializer('sup'),
   U: blockTagDeserializer('u'),
+  // Lists
   OL: blockTagDeserializer('ol'),
   UL: blockTagDeserializer('ul'),
   LI: blockTagDeserializer('li'),
+  // Definition List
+  DL: blockTagDeserializer('dl'),
+  DT: blockTagDeserializer('dt'),
+  DD: blockTagDeserializer('dd'),
   // We do not have a HR option in slate, so we return
   // an empty paragraph
   HR: blockTagDeserializer('p'),

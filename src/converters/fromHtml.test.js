@@ -140,3 +140,48 @@ describe('convertFromHTML parsing html with images nested in h2', () => {
     });
   });
 });
+
+describe('convertFromHTML parsing html with definition lists', () => {
+  const html = `
+  <div>
+    <dl>
+    <dt>Problem A1: Injection</dt>
+    <dd>How Plone handles this: This is usually found in connections with databases as SQL Injection. As Plone does not use a SQL based database this is not possible. The database that Plone uses is not vulnerable to injection as it uses a binary format that cannot have user data inserted.</dd>
+    <dt>Problem A2: Broken Authentication and Session Management</dt>
+    <dd>How Plone handles this: Plone authenticates users in its own database using a SSHA hash of their password. Using its modular authentication system Plone can also authenticate users against common authentication systems such as LDAP and SQL as well as any other system for which a plugin is available (Gmail, OpenID, etc.). After authentication, Plone creates a session using a SHA-256 hash of a secret stored on the server, the userid and the current time. This is based on the Apache auth_tkt cookie format, but with a more secure hash function. Secrets can be refreshed on a regular basis to add extra security where needed.</dd>
+    <dt>Problem A3: Cross Site Scripting (XSS)</dt>
+    <dd>How Plone handles this: Plone has strong filtering in place to make sure that no potentially malicious code can ever be entered into the system. All content that is inserted is stripped of malicious tags like <code>&lt;script&gt;</code>, <code>&lt;embed&gt;</code> and <code>&lt;object&gt;</code>, as well as removing all <code>&lt;form&gt;</code> related tags, stopping users from impersonating any kind of HTTP POST requests. On an infrastructure level, the template language used to create pages in Plone quotes all HTML by default, effectively preventing cross site scripting.</dd>
+    </dl>
+  </div>
+  `;
+
+  describe('with slate converter', () => {
+    const result = convertFromHTML(html, 'slate');
+
+    test('will return an array of blocks', () => {
+      expect(result).toHaveLength(1);
+    });
+
+    test('will have a block with the definition list', () => {
+      const block = result[0];
+      expect(block['@type']).toBe('slate');
+      expect(block.plaintext).toContain('Problem A1: Injection');
+      expect(block.plaintext).toContain(
+        'Problem A3: Cross Site Scripting (XSS)',
+      );
+      expect(block['value'][0]['children']).toHaveLength(6);
+    });
+
+    test('will have the first definition in the list', () => {
+      const definitionList = result[0].value[0];
+      const term = definitionList.children[0];
+      expect(term['type']).toBe('dt');
+      expect(term['children'][0]['text']).toContain('Problem A1: Injection');
+      const definition = definitionList.children[1];
+      expect(definition['type']).toBe('dd');
+      expect(definition['children'][0]['text']).toContain(
+        'usually found in connections with databases as SQL Injection',
+      );
+    });
+  });
+});
