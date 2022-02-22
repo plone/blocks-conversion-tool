@@ -208,13 +208,22 @@ describe('slateTextBlock processing a H1', () => {
 });
 
 describe('slateTextBlock processing a h2', () => {
-  const elem = elementFromString('<h2>Hello world!</h2>');
-
   test('will have a nested structure in the value', () => {
+    const elem = elementFromString('<h2>Hello world!</h2>');
     const result = slateTextBlock(elem);
     const valueElement = result.value[0];
     expect(valueElement['type']).toBe('h2');
     expect(valueElement['children'][0]['text']).toBe('Hello world!');
+  });
+
+  test('will ignore img element in the structure', () => {
+    const elem = elementFromString(
+      '<h2 id="chrissy"><img src="https://plone.org/foundation/meetings/membership/2019-membership-meeting/nominations/img4_08594.jpg/@@images/7a07f0e5-0fd7-4366-a32d-6b033c8dfce7.jpeg" title="Chrissy Wainwright 2019" alt="Chrissy Wainwright 2019" class="image-right">Chrissy Wainwright</h2>',
+    );
+    const result = slateTextBlock(elem);
+    const valueElement = result.value[0];
+    expect(valueElement['type']).toBe('h2');
+    expect(valueElement['children'][0]['text']).toBe('Chrissy Wainwright');
   });
 });
 

@@ -203,7 +203,6 @@ const htmlTagsToSlate = {
 };
 
 const deserialize = (el) => {
-  // console.log('des:', el.nodeType, el);
   if (el.nodeType === COMMENT) {
     return null;
   } else if (el.nodeType === TEXT_NODE) {

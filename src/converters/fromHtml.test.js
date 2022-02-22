@@ -63,3 +63,80 @@ describe('convertFromHTML parsing html', () => {
     });
   });
 });
+
+describe('convertFromHTML parsing html with images nested in h2', () => {
+  const html = `
+  <div>
+    <h2 id="chrissy"><img src="https://plone.org/foundation/meetings/membership/2019-membership-meeting/nominations/img4_08594.jpg/@@images/7a07f0e5-0fd7-4366-a32d-6b033c8dfce7.jpeg" title="Chrissy Wainwright 2019" alt="Chrissy Wainwright 2019" class="image-right">Chrissy Wainwright</h2>
+    <p><strong>President</strong>, (Springdale, Arkansas, USA)</p>
+    <p>Chrissy started at Six Feet Up as a front-end developer building Plone themes and has since moved to the back-end doing Python development and Plone migrations. She has given talks and training classes at many Plone Symposia and Conferences. This is her seventh term on the board, second as President.</p>
+    <hr>
+    <h2 id="erico"><img src="https://plone.org/foundation/board/github.jpg/@@images/1135c449-bf22-4011-b128-ab50c62e03b1.jpeg" title="ericof" alt="ericof" class="image-right">Érico Andrei</h2>
+    <p><strong>Vice President</strong>, (Berlin, DE)</p>
+    <p>Érico Andrei worked for more than 10 years with content management projects using Plone. During that period he co-founded Simples Consultoria, hosted 2 Plone Symposiums, co-organized a Plone Conference and in 2011 he was PythonBrasil (local Pycon) chair. Currently CTO for a German startup. He still uses Plone and Python every day. This is Érico's sixth term on the board.</p>
+    <hr>
+  </div>
+  `;
+
+  describe('with draftjs converter', () => {
+    const result = convertFromHTML(html, 'draftjs');
+
+    test('will return an array of blocks', () => {
+      expect(result).toHaveLength(10);
+    });
+
+    test('will have a first block with an image', () => {
+      const block = result[0];
+      expect(block['@type']).toBe('image');
+      expect(block['align']).toBe('right');
+      expect(block['alt']).toBe('Chrissy Wainwright 2019');
+      expect(block['title']).toBe('Chrissy Wainwright 2019');
+      expect(block['size']).toBe('m');
+      expect(block['url']).toBe(
+        'https://plone.org/foundation/meetings/membership/2019-membership-meeting/nominations/img4_08594.jpg',
+      );
+    });
+
+    test('will have a second block with text content', () => {
+      const block = result[1];
+      expect(block['@type']).toBe('text');
+      const valueElement = block.text;
+      expect(valueElement.blocks).toHaveLength(1);
+      const firstBlock = valueElement.blocks[0];
+      expect(firstBlock['text']).toContain('Chrissy Wainwright');
+      expect(firstBlock['type']).toBe('header-two');
+      expect(firstBlock['depth']).toBe(0);
+    });
+  });
+
+  describe('with slate converter', () => {
+    const result = convertFromHTML(html, 'slate');
+
+    test('will return an array of blocks', () => {
+      expect(result).toHaveLength(10);
+    });
+
+    test('will have a first block with an image', () => {
+      const block = result[0];
+      expect(block['@type']).toBe('image');
+      expect(block['align']).toBe('right');
+      expect(block['alt']).toBe('Chrissy Wainwright 2019');
+      expect(block['title']).toBe('Chrissy Wainwright 2019');
+      expect(block['size']).toBe('m');
+      expect(block['url']).toBe(
+        'https://plone.org/foundation/meetings/membership/2019-membership-meeting/nominations/img4_08594.jpg',
+      );
+    });
+
+    test('will have a second block with text content', () => {
+      const block = result[1];
+      expect(block['@type']).toBe('slate');
+      expect(block.plaintext).toContain('Chrissy Wainwright');
+      const valueElement = block.value[0];
+      expect(valueElement['type']).toBe('h2');
+      expect(valueElement['children'][0]['text']).toContain(
+        'Chrissy Wainwright',
+      );
+    });
+  });
+});
