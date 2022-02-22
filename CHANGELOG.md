@@ -1,3 +1,23 @@
+### [0.3.2](https://github.com/plone/blocks-conversion-tool/compare/0.3.1...0.3.2) (2022-02-18)
+
+
+### Bug Fixes
+
+* Remove from the src the /@[@images](https://github.com/images) suffix (bare Plone uses it, but then it's not supported in the default Volto block. ([d241cbc](https://github.com/plone/blocks-conversion-tool/commit/d241cbc88ba1a8296812102b06ffd900a66c0a38))
+
+
+### Changes
+
+* Do not issue a in slate, always link types. This is consistent with how is the default behavior in slate. ([5951c59](https://github.com/plone/blocks-conversion-tool/commit/5951c59e2604321cca5c6dc83051cb9a00812041))
+
+
+### Maintenance
+
+* Add CI yarn test command ([f57da58](https://github.com/plone/blocks-conversion-tool/commit/f57da5870db76c6f3c05da28ed3a14ca08ab2f0b))
+* Add make release-package and make release-package-dry-run ([dfb1e02](https://github.com/plone/blocks-conversion-tool/commit/dfb1e0292bfe58ea75eb85dd85d641dd29a40ff0))
+* Improve Makefile for building and releasing the Docker image ([e79360e](https://github.com/plone/blocks-conversion-tool/commit/e79360e4b998c0dc31f32e5289bfb657b0e858b6))
+* Lint fixes ([7b62b6c](https://github.com/plone/blocks-conversion-tool/commit/7b62b6c8d9d842f3f4995a42fc35cba001b006fd))
+
 ### [0.3.1](https://github.com/plone/blocks-conversion-tool/compare/0.3.0...0.3.1) (2022-01-07)
 
 

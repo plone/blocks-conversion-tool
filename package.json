@@ -1,6 +1,6 @@
 {
   "name": "@plone/blocks-conversion-tool",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "private": false,
   "type": "module",
   "license": "MIT",
@@ -22,7 +22,8 @@
   },
   "scripts": {
     "start": "node ./src/server.js",
-    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js --watch --watchAll",
+    "test:ci": "node --experimental-vm-modules node_modules/jest/bin/jest.js --runInBand",
     "prettier": "./node_modules/.bin/prettier --single-quote --check '**/*.{js,json}'",
     "prettier:fix": "./node_modules/.bin/prettier --single-quote --write '**/*.{js,json}'",
     "lint": "./node_modules/eslint/bin/eslint.js --max-warnings=0 'src/**/*.js'",
