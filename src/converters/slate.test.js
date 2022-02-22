@@ -443,4 +443,25 @@ describe('slateTableBlock processing a table with a link', () => {
     expect(value['data']['url']).toBe('https://plone.org');
     expect(value['children'][0]['text']).toBe('site');
   });
+
+  describe('slateTextBlock processing a hr tag', () => {
+    const elem = elementFromString('<hr>');
+
+    test('will have @type as slate', () => {
+      const result = slateTextBlock(elem);
+      expect(result['@type']).toBe('slate');
+    });
+
+    test('will have an empty string for plaintext', () => {
+      const result = slateTextBlock(elem);
+      expect(result.plaintext).toBe('');
+    });
+
+    test('will have a nested structure in the value', () => {
+      const result = slateTextBlock(elem);
+      const valueElement = result.value[0];
+      expect(valueElement['type']).toBe('p');
+      expect(valueElement['children'][0]['text']).toBe('');
+    });
+  });
 });

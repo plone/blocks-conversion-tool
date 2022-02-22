@@ -1,4 +1,3 @@
-import { elementFromString } from '../helpers/dom.js';
 import { jsx } from 'slate-hyperscript';
 import { Text } from 'slate';
 
@@ -195,10 +194,12 @@ const htmlTagsToSlate = {
   SUB: blockTagDeserializer('sub'),
   SUP: blockTagDeserializer('sup'),
   U: blockTagDeserializer('u'),
-
   OL: blockTagDeserializer('ol'),
   UL: blockTagDeserializer('ul'),
   LI: blockTagDeserializer('li'),
+  // We do not have a HR option in slate, so we return
+  // an empty paragraph
+  HR: blockTagDeserializer('p'),
 };
 
 const deserialize = (el) => {
