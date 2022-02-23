@@ -69,6 +69,45 @@ describe('slateTextBlock processing a paragraph', () => {
       expect(valueElement.children[0]['text']).toBe('L5122 till Neidling ');
     });
   });
+
+  describe('with a nested structure of elements including links', () => {
+    const elem = elementFromString(
+      '<p><strong>Follow Plone and Plone Conference on Twitter <a href="https://twitter.com/plone" title="Plone Twitter">@plone</a> and <a href="https://twitter.com/ploneconf" title="Twitter">@ploneconf</a> and hastag #ploneconf2021</strong></p>',
+    );
+
+    test('will have @type as slate', () => {
+      const result = slateTextBlock(elem);
+      expect(result['@type']).toBe('slate');
+    });
+
+    test('will have only a paragraph as child', () => {
+      const result = slateTextBlock(elem);
+      expect(result.value).toHaveLength(1);
+      expect(result.value[0]['type']).toBe('p');
+    });
+
+    test('will have one sub element inside the paragraph', () => {
+      const result = slateTextBlock(elem);
+      const valueElementChildren = result.value[0]['children'];
+      expect(valueElementChildren).toHaveLength(1);
+      expect(valueElementChildren[0]['type']).toBe('strong');
+    });
+
+    test('will have nested elements inside strong', () => {
+      const result = slateTextBlock(elem);
+      const valueElementChildren = result.value[0]['children'][0]['children'];
+      expect(valueElementChildren).toHaveLength(5);
+      expect(valueElementChildren[0]['text']).toBe(
+        'Follow Plone and Plone Conference on Twitter ',
+      );
+      expect(valueElementChildren[1]['type']).toBe('link');
+      expect(valueElementChildren[2]['text']).toBe(' and ');
+      expect(valueElementChildren[3]['type']).toBe('link');
+      expect(valueElementChildren[4]['text']).toBe(
+        ' and hastag #ploneconf2021',
+      );
+    });
+  });
 });
 
 describe('slateTextBlock processing a simple pre block', () => {
