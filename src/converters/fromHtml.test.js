@@ -185,3 +185,69 @@ describe('convertFromHTML parsing html with definition lists', () => {
     });
   });
 });
+
+describe('convertFromHTML parsing html with nested divs', () => {
+  const html = `
+  <div>
+    <p><strong>The Plone Conference 2021 will be held as an online event on October 23 - 31, 2021. <br></strong></p>
+    <p>The platform for this virtual event is <a href="https://loudswarm.com/" title="LoudSwarm">LoudSwarm</a>.</p>
+    <p>The conference website can be found at <a href="https://2021.ploneconf.org/" title="Ploneconf 2021">https://2021.ploneconf.org/</a></p>
+    <div class="intro-preliminary">
+    <div>
+      <p>Conference information (subject due to change):</p>
+      <ul>
+        <li>Training</li>
+        <li>4 days of talks + 1 of open spaces -</li>
+        <li>Sprint</li>
+      </ul>
+    </div>
+    </div>
+    <div class="cooked">
+      <h3><strong>Important dates</strong></h3>
+      <ul>
+        <li><strong>Call for papers: Now open - <a href="https://docs.google.com/forms/d/1PAZwkO7GDNnSJLr_V6hvTCy6zK4j4PgxnTZDwuOQI1E/viewform?edit_requested=true" title="Submit talks">submit your talk now</a>!</strong></li>
+        <li>Early bird registrations: <strong><a href="https://tickets.ploneconf.org/" title="Tickets">Get your tickets now</a></strong>!</li>
+        <li>Regular registrations:&nbsp;To be announced</li>
+      </ul>
+    </div>
+    <p><strong>&nbsp;</strong></p>
+    <p><strong>Follow Plone and Plone Conference on Twitter <a href="https://twitter.com/plone" title="Plone Twitter">@plone</a> and <a href="https://twitter.com/ploneconf" title="Twitter">@ploneconf</a> and hastag #ploneconf2021</strong></p>
+    <p><strong>Stay tuned for more information! </strong></p>
+  </div>
+  `;
+
+  describe('with slate converter', () => {
+    const result = convertFromHTML(html, 'slate');
+
+    test('will return an array of blocks', () => {
+      expect(result).toHaveLength(8);
+    });
+
+    test('will have a paragraph with a nested p', () => {
+      const block = result[0];
+      expect(block['@type']).toBe('slate');
+      expect(block.plaintext).toContain('The Plone Conference 2021 will be');
+      // strong inside a p
+      const valueElement = block.value[0];
+      const strongElement = valueElement['children'][0];
+      expect(strongElement['children'][0]['text']).toContain(
+        'The Plone Conference 2021 will be',
+      );
+    });
+
+    test('will have a paragraph with p and a ul', () => {
+      const block = result[3];
+      const slateSubTypes = Array.from(block.value)
+        .map((item) => item['type'])
+        .flat();
+      expect(slateSubTypes).toHaveLength(7);
+      expect(slateSubTypes[0]).toBe('p');
+      expect(slateSubTypes[1]).toBe('p');
+      expect(slateSubTypes[2]).toBe('p');
+      expect(slateSubTypes[3]).toBe('p');
+      expect(slateSubTypes[4]).toBe('ul');
+      expect(slateSubTypes[5]).toBe('p');
+      expect(slateSubTypes[6]).toBe('p');
+    });
+  });
+});

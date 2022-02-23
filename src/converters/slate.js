@@ -10,7 +10,10 @@ const COMMENT = 8;
 // UTILS
 const deserializeChildren = (parent) =>
   Array.from(parent.childNodes)
-    .map((el) => deserialize(el))
+    .map((el) => {
+      const result = deserialize(el);
+      return result;
+    })
     .flat();
 
 const isWhitespace = (c) => {
@@ -170,11 +173,31 @@ const bodyTagDeserializer = (el) => {
   return jsx('fragment', {}, deserializeChildren(el));
 };
 
+const divTagDeserializer = (el) => {
+  const children = Array.from(el.childNodes)
+    .map((child) => {
+      if (child.nodeType === TEXT_NODE) {
+        let value = deserialize(child);
+        if (value === null) {
+          value = ' ';
+        }
+        return jsx('element', { type: 'p' }, value);
+      } else if (child.nodeName === 'DIV') {
+        return divTagDeserializer(child);
+      } else {
+        return jsx('fragment', {}, deserialize(child));
+      }
+    })
+    .flat();
+  return jsx('fragment', {}, children);
+};
+
 // TAG MAP DEFINITIONS
 const htmlTagsToSlate = {
   B: bTagDeserializer,
   BODY: bodyTagDeserializer,
   CODE: codeTagDeserializer,
+  DIV: divTagDeserializer,
   PRE: preTagDeserializer,
   SPAN: spanTagDeserializer,
   A: simpleLinkDeserializer,
@@ -286,8 +309,12 @@ const slateTableBlock = (elem) => {
 
 const slateTextBlock = (elem) => {
   const block = {};
+  let value = deserialize(elem);
+  if (!Array.isArray(value)) {
+    value = [value];
+  }
   block['@type'] = 'slate';
-  block.value = [deserialize(elem)];
+  block.value = value;
   block.plaintext = elem.textContent;
   return block;
 };

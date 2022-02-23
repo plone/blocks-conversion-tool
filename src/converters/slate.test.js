@@ -196,6 +196,97 @@ describe('slateTextBlock processing a span', () => {
   });
 });
 
+describe('slateTextBlock processing a div', () => {
+  test('with a text value', () => {
+    const elem = elementFromString('<div>Hello world!</div>');
+    const result = slateTextBlock(elem);
+    expect(result.value).toHaveLength(1);
+    const valueElement = result.value[0];
+    expect(valueElement['type']).toBe('p');
+    expect(valueElement['children'][0]['text']).toBe('Hello world!');
+  });
+
+  test('with a nested paragraph value', () => {
+    const elem = elementFromString('<div><p>Hello world!</p></div>');
+    const result = slateTextBlock(elem);
+    expect(result.value).toHaveLength(1);
+    const valueElement = result.value[0];
+    expect(valueElement['type']).toBe('p');
+    expect(valueElement['children'][0]['text']).toBe('Hello world!');
+  });
+
+  describe('with nested paragraphs', () => {
+    const elem = elementFromString('<div><p>Hello</p> <p>world!</p></div>');
+    const result = slateTextBlock(elem);
+
+    test('will have 3 elements', () => {
+      expect(result.value).toHaveLength(3);
+    });
+
+    test('will have a paragraph as first element', () => {
+      const valueElement = result.value[0];
+      expect(valueElement['type']).toBe('p');
+      expect(valueElement['children'][0]['text']).toBe('Hello');
+    });
+
+    test('will have a paragraph as second element', () => {
+      const valueElement = result.value[1];
+      expect(valueElement['type']).toBe('p');
+      expect(valueElement['children'][0]['text']).toBe(' ');
+    });
+
+    test('will have a paragraph as third element', () => {
+      const valueElement = result.value[2];
+      expect(valueElement['type']).toBe('p');
+      expect(valueElement['children'][0]['text']).toBe('world!');
+    });
+  });
+
+  describe('with nested div', () => {
+    const elem = elementFromString('<div><div>Hello world!</div></div>');
+    const result = slateTextBlock(elem);
+
+    test('will have 1 elements', () => {
+      expect(result.value).toHaveLength(1);
+    });
+
+    test('will have a paragraph as first element', () => {
+      const valueElement = result.value[0];
+      expect(valueElement['type']).toBe('p');
+      expect(valueElement['children'][0]['text']).toBe('Hello world!');
+    });
+  });
+
+  describe('with nested div and nested paragraphs', () => {
+    const elem = elementFromString(
+      '<div><div><p>Hello</p> <p>world!</p></div></div>',
+    );
+    const result = slateTextBlock(elem);
+
+    test('will have 3 elements', () => {
+      expect(result.value).toHaveLength(3);
+    });
+
+    test('will have a paragraph as first element', () => {
+      const valueElement = result.value[0];
+      expect(valueElement['type']).toBe('p');
+      expect(valueElement['children'][0]['text']).toBe('Hello');
+    });
+
+    test('will have a paragraph as second element', () => {
+      const valueElement = result.value[1];
+      expect(valueElement['type']).toBe('p');
+      expect(valueElement['children'][0]['text']).toBe(' ');
+    });
+
+    test('will have a paragraph as third element', () => {
+      const valueElement = result.value[2];
+      expect(valueElement['type']).toBe('p');
+      expect(valueElement['children'][0]['text']).toBe('world!');
+    });
+  });
+});
+
 describe('slateTextBlock processing a H1', () => {
   const elem = elementFromString('<h1>Hello world!</h1>');
 
