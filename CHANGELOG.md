@@ -1,3 +1,10 @@
+### [0.4.1](https://github.com/plone/blocks-conversion-tool/compare/0.4.0...0.4.1) (2022-02-28)
+
+
+### Maintenance
+
+* Fix Docker image workflow ([1a599d3](https://github.com/plone/blocks-conversion-tool/commit/1a599d344a67bc6123061a114567cfd710a0d0d8))
+
 ## [0.4.0](https://github.com/plone/blocks-conversion-tool/compare/0.3.2...0.4.0) (2022-02-28)
 
 
