@@ -63,3 +63,191 @@ describe('convertFromHTML parsing html', () => {
     });
   });
 });
+
+describe('convertFromHTML parsing html with images nested in h2', () => {
+  const html = `
+  <div>
+    <h2 id="chrissy"><img src="https://plone.org/foundation/meetings/membership/2019-membership-meeting/nominations/img4_08594.jpg/@@images/7a07f0e5-0fd7-4366-a32d-6b033c8dfce7.jpeg" title="Chrissy Wainwright 2019" alt="Chrissy Wainwright 2019" class="image-right">Chrissy Wainwright</h2>
+    <p><strong>President</strong>, (Springdale, Arkansas, USA)</p>
+    <p>Chrissy started at Six Feet Up as a front-end developer building Plone themes and has since moved to the back-end doing Python development and Plone migrations. She has given talks and training classes at many Plone Symposia and Conferences. This is her seventh term on the board, second as President.</p>
+    <hr>
+    <h2 id="erico"><img src="https://plone.org/foundation/board/github.jpg/@@images/1135c449-bf22-4011-b128-ab50c62e03b1.jpeg" title="ericof" alt="ericof" class="image-right">Érico Andrei</h2>
+    <p><strong>Vice President</strong>, (Berlin, DE)</p>
+    <p>Érico Andrei worked for more than 10 years with content management projects using Plone. During that period he co-founded Simples Consultoria, hosted 2 Plone Symposiums, co-organized a Plone Conference and in 2011 he was PythonBrasil (local Pycon) chair. Currently CTO for a German startup. He still uses Plone and Python every day. This is Érico's sixth term on the board.</p>
+    <hr>
+  </div>
+  `;
+
+  describe('with draftjs converter', () => {
+    const result = convertFromHTML(html, 'draftjs');
+
+    test('will return an array of blocks', () => {
+      expect(result).toHaveLength(10);
+    });
+
+    test('will have a first block with an image', () => {
+      const block = result[0];
+      expect(block['@type']).toBe('image');
+      expect(block['align']).toBe('right');
+      expect(block['alt']).toBe('Chrissy Wainwright 2019');
+      expect(block['title']).toBe('Chrissy Wainwright 2019');
+      expect(block['size']).toBe('m');
+      expect(block['url']).toBe(
+        'https://plone.org/foundation/meetings/membership/2019-membership-meeting/nominations/img4_08594.jpg',
+      );
+    });
+
+    test('will have a second block with text content', () => {
+      const block = result[1];
+      expect(block['@type']).toBe('text');
+      const valueElement = block.text;
+      expect(valueElement.blocks).toHaveLength(1);
+      const firstBlock = valueElement.blocks[0];
+      expect(firstBlock['text']).toContain('Chrissy Wainwright');
+      expect(firstBlock['type']).toBe('header-two');
+      expect(firstBlock['depth']).toBe(0);
+    });
+  });
+
+  describe('with slate converter', () => {
+    const result = convertFromHTML(html, 'slate');
+
+    test('will return an array of blocks', () => {
+      expect(result).toHaveLength(10);
+    });
+
+    test('will have a first block with an image', () => {
+      const block = result[0];
+      expect(block['@type']).toBe('image');
+      expect(block['align']).toBe('right');
+      expect(block['alt']).toBe('Chrissy Wainwright 2019');
+      expect(block['title']).toBe('Chrissy Wainwright 2019');
+      expect(block['size']).toBe('m');
+      expect(block['url']).toBe(
+        'https://plone.org/foundation/meetings/membership/2019-membership-meeting/nominations/img4_08594.jpg',
+      );
+    });
+
+    test('will have a second block with text content', () => {
+      const block = result[1];
+      expect(block['@type']).toBe('slate');
+      expect(block.plaintext).toContain('Chrissy Wainwright');
+      const valueElement = block.value[0];
+      expect(valueElement['type']).toBe('h2');
+      expect(valueElement['children'][0]['text']).toContain(
+        'Chrissy Wainwright',
+      );
+    });
+  });
+});
+
+describe('convertFromHTML parsing html with definition lists', () => {
+  const html = `
+  <div>
+    <dl>
+    <dt>Problem A1: Injection</dt>
+    <dd>How Plone handles this: This is usually found in connections with databases as SQL Injection. As Plone does not use a SQL based database this is not possible. The database that Plone uses is not vulnerable to injection as it uses a binary format that cannot have user data inserted.</dd>
+    <dt>Problem A2: Broken Authentication and Session Management</dt>
+    <dd>How Plone handles this: Plone authenticates users in its own database using a SSHA hash of their password. Using its modular authentication system Plone can also authenticate users against common authentication systems such as LDAP and SQL as well as any other system for which a plugin is available (Gmail, OpenID, etc.). After authentication, Plone creates a session using a SHA-256 hash of a secret stored on the server, the userid and the current time. This is based on the Apache auth_tkt cookie format, but with a more secure hash function. Secrets can be refreshed on a regular basis to add extra security where needed.</dd>
+    <dt>Problem A3: Cross Site Scripting (XSS)</dt>
+    <dd>How Plone handles this: Plone has strong filtering in place to make sure that no potentially malicious code can ever be entered into the system. All content that is inserted is stripped of malicious tags like <code>&lt;script&gt;</code>, <code>&lt;embed&gt;</code> and <code>&lt;object&gt;</code>, as well as removing all <code>&lt;form&gt;</code> related tags, stopping users from impersonating any kind of HTTP POST requests. On an infrastructure level, the template language used to create pages in Plone quotes all HTML by default, effectively preventing cross site scripting.</dd>
+    </dl>
+  </div>
+  `;
+
+  describe('with slate converter', () => {
+    const result = convertFromHTML(html, 'slate');
+
+    test('will return an array of blocks', () => {
+      expect(result).toHaveLength(1);
+    });
+
+    test('will have a block with the definition list', () => {
+      const block = result[0];
+      expect(block['@type']).toBe('slate');
+      expect(block.plaintext).toContain('Problem A1: Injection');
+      expect(block.plaintext).toContain(
+        'Problem A3: Cross Site Scripting (XSS)',
+      );
+      expect(block['value'][0]['children']).toHaveLength(6);
+    });
+
+    test('will have the first definition in the list', () => {
+      const definitionList = result[0].value[0];
+      const term = definitionList.children[0];
+      expect(term['type']).toBe('dt');
+      expect(term['children'][0]['text']).toContain('Problem A1: Injection');
+      const definition = definitionList.children[1];
+      expect(definition['type']).toBe('dd');
+      expect(definition['children'][0]['text']).toContain(
+        'usually found in connections with databases as SQL Injection',
+      );
+    });
+  });
+});
+
+describe('convertFromHTML parsing html with nested divs', () => {
+  const html = `
+  <div>
+    <p><strong>The Plone Conference 2021 will be held as an online event on October 23 - 31, 2021. <br></strong></p>
+    <p>The platform for this virtual event is <a href="https://loudswarm.com/" title="LoudSwarm">LoudSwarm</a>.</p>
+    <p>The conference website can be found at <a href="https://2021.ploneconf.org/" title="Ploneconf 2021">https://2021.ploneconf.org/</a></p>
+    <div class="intro-preliminary">
+    <div>
+      <p>Conference information (subject due to change):</p>
+      <ul>
+        <li>Training</li>
+        <li>4 days of talks + 1 of open spaces -</li>
+        <li>Sprint</li>
+      </ul>
+    </div>
+    </div>
+    <div class="cooked">
+      <h3><strong>Important dates</strong></h3>
+      <ul>
+        <li><strong>Call for papers: Now open - <a href="https://docs.google.com/forms/d/1PAZwkO7GDNnSJLr_V6hvTCy6zK4j4PgxnTZDwuOQI1E/viewform?edit_requested=true" title="Submit talks">submit your talk now</a>!</strong></li>
+        <li>Early bird registrations: <strong><a href="https://tickets.ploneconf.org/" title="Tickets">Get your tickets now</a></strong>!</li>
+        <li>Regular registrations:&nbsp;To be announced</li>
+      </ul>
+    </div>
+    <p><strong>&nbsp;</strong></p>
+    <p><strong>Follow Plone and Plone Conference on Twitter <a href="https://twitter.com/plone" title="Plone Twitter">@plone</a> and <a href="https://twitter.com/ploneconf" title="Twitter">@ploneconf</a> and hastag #ploneconf2021</strong></p>
+    <p><strong>Stay tuned for more information! </strong></p>
+  </div>
+  `;
+
+  describe('with slate converter', () => {
+    const result = convertFromHTML(html, 'slate');
+
+    test('will return an array of blocks', () => {
+      expect(result).toHaveLength(8);
+    });
+
+    test('will have a paragraph with a nested p', () => {
+      const block = result[0];
+      expect(block['@type']).toBe('slate');
+      expect(block.plaintext).toContain('The Plone Conference 2021 will be');
+      // strong inside a p
+      const valueElement = block.value[0];
+      const strongElement = valueElement['children'][0];
+      expect(strongElement['children'][0]['text']).toContain(
+        'The Plone Conference 2021 will be',
+      );
+    });
+
+    test('will have a paragraph with p and a ul', () => {
+      const block = result[3];
+      const slateSubTypes = Array.from(block.value)
+        .map((item) => item['type'])
+        .flat();
+      expect(slateSubTypes).toHaveLength(7);
+      expect(slateSubTypes[0]).toBe('p');
+      expect(slateSubTypes[1]).toBe('p');
+      expect(slateSubTypes[2]).toBe('p');
+      expect(slateSubTypes[3]).toBe('p');
+      expect(slateSubTypes[4]).toBe('ul');
+      expect(slateSubTypes[5]).toBe('p');
+      expect(slateSubTypes[6]).toBe('p');
+    });
+  });
+});
