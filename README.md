@@ -42,3 +42,22 @@ Draft-JS is the legacy default text block used in Volto.
 ```shell
 curl -i -X POST http://localhost:5000/html -H "Accept: application/json" -H "Content-Type: application/json" --data-raw '{"html": "<p>Hello world!</p>", "converter": "draftjs"}'
 ```
+
+## Developing this package
+
+### Commit messages
+
+This package uses [@release-it/conventional-changelog](https://github.com/release-it/conventional-changelog) to generate its [CHANGELOG](CHANGELOG.md) , so please always prefix your commit messages with:
+
+- **feat** : New features
+- **fix** : Bug fixes
+- **refactor** : Code changes and refactoring
+- **chore**: Maintainence tasks
+
+### Release
+
+We use **release-it** to manage version releases of **@plone/blocks-conversion-tool**. To cut a new release  run `make release-package`.
+
+It is strongly recommended you first do a dry-run with `make release-package-dry-run` to make sure everything is in order for a new release.
+
+After releasing the package to NPM, also create a new image tag on Docker Hub: `make release-image`
