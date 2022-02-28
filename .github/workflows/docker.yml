@@ -6,7 +6,6 @@ on:
 jobs:
   docker:
     runs-on: ubuntu-latest
-    needs: build
     steps:
 
       - name: Checkout
