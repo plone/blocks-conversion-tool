@@ -1,3 +1,18 @@
+## [0.4.0](https://github.com/plone/blocks-conversion-tool/compare/0.3.2...0.4.0) (2022-02-28)
+
+
+### Bug Fixes
+
+* Fix issue [#6](https://github.com/plone/blocks-conversion-tool/issues/6) Images within headings are dropped. ([fa5394d](https://github.com/plone/blocks-conversion-tool/commit/fa5394daae05089b69ff445f8381d15b8eb3e7fd))
+* Manage nested DIV elements. ([45153a4](https://github.com/plone/blocks-conversion-tool/commit/45153a4f024fe7d5da1d6de96c9120a1d5af5225))
+
+
+### Maintenance
+
+* Add Github Actions workflow to publish new tag to Docker Hub ([03f5065](https://github.com/plone/blocks-conversion-tool/commit/03f5065539f79ac75192374c25a2f86889492b07))
+* Add information about commit messages and how to release this package ([f00c69a](https://github.com/plone/blocks-conversion-tool/commit/f00c69a01f807a40576f335c6925124fcd1d22ab))
+* Add test for nested paragraphs and links. ([245b7f4](https://github.com/plone/blocks-conversion-tool/commit/245b7f4595ecbb59e80b75ece9e816785ddfc5b8))
+
 ### [0.3.2](https://github.com/plone/blocks-conversion-tool/compare/0.3.1...0.3.2) (2022-02-18)
 
 
