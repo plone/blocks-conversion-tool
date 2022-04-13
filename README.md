@@ -19,6 +19,12 @@ yarn install
 yarn start
 ```
 
+To use a different port than 5000 if that one is already opened by another process:
+
+```shell
+PORT=6000 yarn start
+```
+
 ### With Docker
 
 ```shell
