@@ -1,4 +1,4 @@
-FROM node:14-slim as base
+FROM node:16-slim as base
 FROM base as builder
 
 # Create app directory
