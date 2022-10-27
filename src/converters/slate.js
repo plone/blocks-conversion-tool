@@ -299,7 +299,7 @@ const slateTableBlock = (elem) => {
           const cellValue = Array.from(cell.childNodes).map(deserialize);
           cells.push(createCell(cellType, cellValue));
         }
-        rows.push({ cells });
+        rows.push({ key: getId(), cells });
       }
     }
   }
