@@ -1,3 +1,15 @@
+### [0.4.2](https://github.com/plone/blocks-conversion-tool/compare/0.4.1...0.4.2) (2022-10-27)
+
+
+### Bug Fixes
+
+* Fix issue [#9](https://github.com/plone/blocks-conversion-tool/issues/9) Missing rows in tables ([495cadc](https://github.com/plone/blocks-conversion-tool/commit/495cadc029d928856cab73fb5e3920e11d820d1c))
+
+
+### Maintenance
+
+* Use Node 16 ([a0a251a](https://github.com/plone/blocks-conversion-tool/commit/a0a251a31aa773ddfadf1900c7449476ffe65712))
+
 ### [0.4.1](https://github.com/plone/blocks-conversion-tool/compare/0.4.0...0.4.1) (2022-02-28)
 
 
