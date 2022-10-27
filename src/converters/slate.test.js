@@ -514,7 +514,9 @@ describe('slateTableBlock processing a simple table', () => {
     const result = slateTableBlock(elem);
     const rows = result.table.rows;
     expect(rows).toHaveLength(1);
+    expect(rows[0].key).toBeDefined();
     expect(rows[0].cells).toHaveLength(1);
+    expect(rows[0].cells[0].key).toBeDefined();
     expect(rows[0].cells[0].type).toBe('data');
     expect(rows[0].cells[0].value).toHaveLength(1);
     const value = rows[0].cells[0].value[0];
