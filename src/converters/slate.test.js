@@ -525,6 +525,25 @@ describe('slateTableBlock processing a simple table', () => {
   });
 });
 
+describe('slateTableBlock processing a table with whitespace', () => {
+  const elem = elementFromString(
+    '<table><tr><td>A value<br>&nbsp;</td></tr></table>',
+  );
+
+  test('will remove the whitespace', () => {
+    const result = slateTableBlock(elem);
+    const rows = result.table.rows;
+    expect(rows).toHaveLength(1);
+    const cells = rows[0].cells;
+    expect(cells).toHaveLength(1);
+    const cell = cells[0];
+    expect(cell.value).toEqual([
+      { type: 'p', children: [{ text: 'A value' }] },
+      { type: 'p', children: [{ text: '\n' }] },
+    ]);
+  });
+});
+
 describe('slateTableBlock processing a table with a link', () => {
   const elem = elementFromString(
     '<table><tr><td><a href="https://plone.org">Plone</a></td></tr></table>',
