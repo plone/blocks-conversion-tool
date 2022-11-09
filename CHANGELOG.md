@@ -1,3 +1,10 @@
+### [0.4.3](https://github.com/plone/blocks-conversion-tool/compare/0.4.2...0.4.3) (2022-11-09)
+
+
+### Bug Fixes
+
+* Filter null values from slateTable cells ([cedd0dd](https://github.com/plone/blocks-conversion-tool/commit/cedd0dd448bae1644496427fb4e0eb5368fea5fc))
+
 ### [0.4.2](https://github.com/plone/blocks-conversion-tool/compare/0.4.1...0.4.2) (2022-10-27)
 
 
