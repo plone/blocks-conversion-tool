@@ -520,8 +520,7 @@ describe('slateTableBlock processing a simple table', () => {
     expect(rows[0].cells[0].type).toBe('data');
     expect(rows[0].cells[0].value).toHaveLength(1);
     const value = rows[0].cells[0].value[0];
-    expect(value['type']).toBe('p');
-    expect(value['children'][0]['text']).toBe('A value');
+    expect(value['text']).toBe('A value');
   });
 });
 
@@ -537,10 +536,7 @@ describe('slateTableBlock processing a table with whitespace', () => {
     const cells = rows[0].cells;
     expect(cells).toHaveLength(1);
     const cell = cells[0];
-    expect(cell.value).toEqual([
-      { type: 'p', children: [{ text: 'A value' }] },
-      { type: 'p', children: [{ text: '\n' }] },
-    ]);
+    expect(cell.value).toEqual([{ text: 'A value' }, { text: '\n' }]);
   });
 });
 
@@ -591,8 +587,7 @@ describe('slateTableBlock processing a table with a link', () => {
     const result = slateTableBlock(elem);
     const rows = result.table.rows;
     let value = rows[0].cells[0].value[0];
-    expect(value['type']).toBe('p');
-    expect(value['children'][0]['text']).toBe('Plone ');
+    expect(value['text']).toBe('Plone ');
   });
 
   test('second value is the link', () => {
@@ -622,6 +617,24 @@ describe('slateTableBlock processing a table with a link', () => {
       const valueElement = result.value[0];
       expect(valueElement['type']).toBe('p');
       expect(valueElement['children'][0]['text']).toBe('');
+    });
+  });
+
+  describe('slateTableBlock processing a table with text + sup', () => {
+    const elem = elementFromString(
+      '<table><tr><td>10<sup>2</sup></td></tr></table>',
+    );
+
+    test('will keep sup inline', () => {
+      const result = slateTableBlock(elem);
+      const cell = result.table.rows[0].cells[0];
+      expect(cell.value).toEqual([
+        { text: '10' },
+        {
+          type: 'sup',
+          children: [{ text: '2' }],
+        },
+      ]);
     });
   });
 });
