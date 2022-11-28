@@ -1,3 +1,10 @@
+### [0.4.4](https://github.com/plone/blocks-conversion-tool/compare/0.4.3...0.4.4) (2022-11-28)
+
+
+### Bug Fixes
+
+* Don't turn text nodes that are children of table cells into paragraphs ([e96e2c3](https://github.com/plone/blocks-conversion-tool/commit/e96e2c3e49c390cc69b55b106a5a86c94527d6ec))
+
 ### [0.4.3](https://github.com/plone/blocks-conversion-tool/compare/0.4.2...0.4.3) (2022-11-09)
 
 
