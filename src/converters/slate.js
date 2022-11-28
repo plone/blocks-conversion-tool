@@ -262,7 +262,7 @@ const deserialize = (el) => {
 const createCell = (type, rawValue) => {
   const value = rawValue.map(function (el) {
     if (typeof el === 'string') {
-      return jsx('element', { type: 'p' }, el);
+      return { text: el };
     } else {
       return el;
     }
