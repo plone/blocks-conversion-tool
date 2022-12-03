@@ -1,5 +1,10 @@
 import { jsx } from 'slate-hyperscript';
 import { Text } from 'slate';
+import {
+  groupInlineNodes,
+  isWhitespace,
+  isGlobalInline,
+} from '../helpers/dom.js';
 
 const getId = () => Math.floor(Math.random() * Math.pow(2, 24)).toString(32);
 
@@ -16,54 +21,18 @@ const deserializeChildren = (parent) =>
     })
     .flat();
 
-const isWhitespace = (c) => {
-  return (
-    typeof c === 'string' &&
-    c.replace(/\s/g, '').replace(/\t/g, '').replace(/\n/g, '').length === 0
-  );
-};
-
 const createEmptyParagraph = () => jsx('element', { type: 'p' }, []);
-const createDefaultBlock = (node) => jsx('element', { type: 'span' }, [node]);
+
+const isInline = (n) =>
+  typeof n === 'string' || Text.isText(n) || isGlobalInline(n.type);
 
 function normalizeBlockNodes(children) {
-  const nodes = [];
-  let inlinesBlock = null;
-
-  const isInline = (n) =>
-    typeof n === 'string' || Text.isText(n) || isGlobalInline(n);
-
-  children.forEach((node) => {
-    if (!isInline(node)) {
-      inlinesBlock = null;
-      nodes.push(node);
-    } else {
-      node = typeof node === 'string' ? { text: node } : node;
-      if (!inlinesBlock) {
-        inlinesBlock = createDefaultBlock([node]);
-        nodes.push(inlinesBlock);
-      } else {
-        inlinesBlock.children.push(node);
-      }
-    }
+  return groupInlineNodes(children, {
+    isInline,
+    createParent: (child) => jsx('element', { type: 'span' }, [child]),
+    appendChild: (parent, child) => parent.children.push(child),
   });
-  return nodes;
 }
-
-const inlineElements = [
-  'link',
-  'em',
-  'i',
-  'b',
-  'strong',
-  'u',
-  's',
-  'sub',
-  'sup',
-  'code',
-];
-
-const isGlobalInline = (node) => inlineElements.includes(node.type);
 
 // DESERIALIZERS
 const simpleLinkDeserializer = (el) => {
@@ -119,7 +88,7 @@ const spanTagDeserializer = (el) => {
 };
 
 const blockTagDeserializer = (tagname) => (el) => {
-  let children = deserializeChildren(el).filter((n) => n !== null);
+  let children = jsx('fragment', {}, deserializeChildren(el));
 
   if (
     ['td', 'th'].includes(tagname) &&
@@ -133,8 +102,6 @@ const blockTagDeserializer = (tagname) => (el) => {
     children = [p];
   }
 
-  const isInline = (n) =>
-    typeof n === 'string' || Text.isText(n) || isGlobalInline(n);
   const hasBlockChild = children.filter((n) => !isInline(n)).length > 0;
 
   if (hasBlockChild) {

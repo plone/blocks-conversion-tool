@@ -251,3 +251,67 @@ describe('convertFromHTML parsing html with nested divs', () => {
     });
   });
 });
+
+describe('convertFromHTML parsing unwrapped text', () => {
+  const html = 'text with an <b>inline element</b> and more text';
+
+  describe('with slate converter', () => {
+    const result = convertFromHTML(html, 'slate');
+
+    test('will return a block with the text in a paragraph', () => {
+      expect(result).toHaveLength(1);
+      expect(result[0].value).toEqual([
+        {
+          type: 'p',
+          children: [
+            { text: 'text with an ' },
+            { type: 'strong', children: [{ text: 'inline element' }] },
+            { text: ' and more text' },
+          ],
+        },
+      ]);
+    });
+  });
+});
+
+describe('convertFromHTML parsing unwrapped text with blocks', () => {
+  const html = 'text with a <div>block element</div> and more text';
+
+  describe('with slate converter', () => {
+    const result = convertFromHTML(html, 'slate');
+
+    test('will return 3 blocks with the text in paragraphs', () => {
+      expect(result).toHaveLength(3);
+      expect(result[0].value).toEqual([
+        { type: 'p', children: [{ text: 'text with a ' }] },
+      ]);
+      expect(result[1].value).toEqual([
+        { type: 'p', children: [{ text: 'block element' }] },
+      ]);
+      expect(result[2].value).toEqual([
+        { type: 'p', children: [{ text: ' and more text' }] },
+      ]);
+    });
+  });
+});
+
+describe('convertFromHTML parsing div with br tags', () => {
+  const html = '<div><b>Foo</b> <br /><br />Bar</div>';
+
+  describe('with slate converter', () => {
+    const result = convertFromHTML(html, 'slate');
+
+    test('will return a block with the text in a paragraph', () => {
+      expect(result).toHaveLength(1);
+      expect(result[0].value).toEqual([
+        {
+          type: 'p',
+          children: [
+            { type: 'strong', children: [{ text: 'Foo' }] },
+            { text: '\n\nBar' },
+          ],
+        },
+      ]);
+    });
+  });
+});
