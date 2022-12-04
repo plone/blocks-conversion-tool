@@ -108,6 +108,26 @@ describe('slateTextBlock processing a paragraph', () => {
       );
     });
   });
+
+  describe('with whitespace between inline elements', () => {
+    const elem = elementFromString(
+      '<p><em>em</em> <strong>strong</strong></p>',
+    );
+
+    test('will preserve the whitespace', () => {
+      const result = slateTextBlock(elem);
+      expect(result.value).toEqual([
+        {
+          type: 'p',
+          children: [
+            { type: 'em', children: [{ text: 'em' }] },
+            { text: ' ' },
+            { type: 'strong', children: [{ text: 'strong' }] },
+          ],
+        },
+      ]);
+    });
+  });
 });
 
 describe('slateTextBlock processing a simple pre block', () => {
@@ -139,10 +159,10 @@ describe('slateTextBlock processing a pre block with nested code element', () =>
 describe('slateTextBlock processing a br', () => {
   const elem = elementFromString('<br>');
 
-  test('will have a nested structure in the value', () => {
+  test('will have text with a newline', () => {
     const result = slateTextBlock(elem);
     expect(result.plaintext).toBe('');
-    expect(result.value[0]).toMatch(/\n/);
+    expect(result.value).toEqual([{ text: '\n' }]);
   });
 });
 
@@ -550,14 +570,14 @@ describe('slateTableBlock processing a table with whitespace', () => {
     '<table><tr><td>A value<br>&nbsp;</td></tr></table>',
   );
 
-  test('will remove the whitespace', () => {
+  test('will preserve the whitespace', () => {
     const result = slateTableBlock(elem);
     const rows = result.table.rows;
     expect(rows).toHaveLength(1);
     const cells = rows[0].cells;
     expect(cells).toHaveLength(1);
     const cell = cells[0];
-    expect(cell.value).toEqual([{ text: 'A value' }, { text: '\n' }]);
+    expect(cell.value).toEqual([{ text: 'A value\n\xa0' }]);
   });
 });
 

@@ -315,3 +315,17 @@ describe('convertFromHTML parsing div with br tags', () => {
     });
   });
 });
+
+describe('convertFromHTML parsing whitespace inside unknown tags', () => {
+  const html = '<center>\n<strong>text</strong>\n</center>';
+
+  describe('returns valid result preserving the whitespace', () => {
+    const result = convertFromHTML(html, 'slate');
+    expect(result).toHaveLength(1);
+    expect(result[0].value).toEqual([
+      { text: ' ' },
+      { type: 'strong', children: [{ text: 'text' }] },
+      { text: ' ' },
+    ]);
+  });
+});

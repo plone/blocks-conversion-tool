@@ -9,10 +9,7 @@ const elementFromString = (value) => {
 };
 
 const isWhitespace = (c) => {
-  return (
-    typeof c === 'string' &&
-    c.replace(/\s/g, '').replace(/\t/g, '').replace(/\n/g, '').length === 0
-  );
+  return typeof c === 'string' && c.replace(/[\t\n\r ]/g, '').length === 0;
 };
 
 const groupInlineNodes = (inNodes, { isInline, createParent, appendChild }) => {
