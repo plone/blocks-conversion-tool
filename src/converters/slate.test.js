@@ -492,6 +492,27 @@ describe('slateTextBlock processing a link', () => {
   });
 });
 
+describe('slateTextBlock processing a hr tag', () => {
+  const elem = elementFromString('<hr>');
+
+  test('will have @type as slate', () => {
+    const result = slateTextBlock(elem);
+    expect(result['@type']).toBe('slate');
+  });
+
+  test('will have an empty string for plaintext', () => {
+    const result = slateTextBlock(elem);
+    expect(result.plaintext).toBe('');
+  });
+
+  test('will have a nested structure in the value', () => {
+    const result = slateTextBlock(elem);
+    const valueElement = result.value[0];
+    expect(valueElement['type']).toBe('p');
+    expect(valueElement['children'][0]['text']).toBe('');
+  });
+});
+
 describe('slateTableBlock processing a simple table', () => {
   const elem = elementFromString('<table><tr><td>A value</td></tr></table>');
 
@@ -598,43 +619,36 @@ describe('slateTableBlock processing a table with a link', () => {
     expect(value['data']['url']).toBe('https://plone.org');
     expect(value['children'][0]['text']).toBe('site');
   });
+});
 
-  describe('slateTextBlock processing a hr tag', () => {
-    const elem = elementFromString('<hr>');
+describe('slateTableBlock processing a table with text + sup', () => {
+  const elem = elementFromString(
+    '<table><tr><td>10<sup>2</sup></td></tr></table>',
+  );
 
-    test('will have @type as slate', () => {
-      const result = slateTextBlock(elem);
-      expect(result['@type']).toBe('slate');
-    });
-
-    test('will have an empty string for plaintext', () => {
-      const result = slateTextBlock(elem);
-      expect(result.plaintext).toBe('');
-    });
-
-    test('will have a nested structure in the value', () => {
-      const result = slateTextBlock(elem);
-      const valueElement = result.value[0];
-      expect(valueElement['type']).toBe('p');
-      expect(valueElement['children'][0]['text']).toBe('');
-    });
+  test('will keep sup inline', () => {
+    const result = slateTableBlock(elem);
+    const cell = result.table.rows[0].cells[0];
+    expect(cell.value).toEqual([
+      { text: '10' },
+      {
+        type: 'sup',
+        children: [{ text: '2' }],
+      },
+    ]);
   });
+});
 
-  describe('slateTableBlock processing a table with text + sup', () => {
-    const elem = elementFromString(
-      '<table><tr><td>10<sup>2</sup></td></tr></table>',
-    );
+describe('slateTableBlock processing a table with a div', () => {
+  const elem = elementFromString(
+    '<table><tr><td><div><strong>text</strong></div></td></tr></table>',
+  );
 
-    test('will keep sup inline', () => {
-      const result = slateTableBlock(elem);
-      const cell = result.table.rows[0].cells[0];
-      expect(cell.value).toEqual([
-        { text: '10' },
-        {
-          type: 'sup',
-          children: [{ text: '2' }],
-        },
-      ]);
-    });
+  test('will remove the div', () => {
+    const result = slateTableBlock(elem);
+    const cell = result.table.rows[0].cells[0];
+    expect(cell.value).toEqual([
+      { type: 'strong', children: [{ text: 'text' }] },
+    ]);
   });
 });
