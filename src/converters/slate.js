@@ -1,5 +1,10 @@
 import { jsx } from 'slate-hyperscript';
 import { Text } from 'slate';
+import {
+  groupInlineNodes,
+  isWhitespace,
+  isGlobalInline,
+} from '../helpers/dom.js';
 
 const getId = () => Math.floor(Math.random() * Math.pow(2, 24)).toString(32);
 
@@ -10,69 +15,28 @@ const COMMENT = 8;
 // UTILS
 const deserializeChildren = (parent) =>
   Array.from(parent.childNodes)
-    .map((el) => {
-      const result = deserialize(el);
-      return result;
-    })
-    .flat();
-
-const isWhitespace = (c) => {
-  return (
-    typeof c === 'string' &&
-    c.replace(/\s/g, '').replace(/\t/g, '').replace(/\n/g, '').length === 0
-  );
-};
+    .map((el) => deserialize(el))
+    .flat()
+    .filter((x) => x);
 
 const createEmptyParagraph = () => jsx('element', { type: 'p' }, []);
-const createDefaultBlock = (node) => jsx('element', { type: 'span' }, [node]);
+
+const isInline = (n) =>
+  typeof n === 'string' || Text.isText(n) || isGlobalInline(n.type);
 
 function normalizeBlockNodes(children) {
-  const nodes = [];
-  let inlinesBlock = null;
-
-  const isInline = (n) =>
-    typeof n === 'string' || Text.isText(n) || isGlobalInline(n);
-
-  children.forEach((node) => {
-    if (!isInline(node)) {
-      inlinesBlock = null;
-      nodes.push(node);
-    } else {
-      node = typeof node === 'string' ? { text: node } : node;
-      if (!inlinesBlock) {
-        inlinesBlock = createDefaultBlock([node]);
-        nodes.push(inlinesBlock);
-      } else {
-        inlinesBlock.children.push(node);
-      }
-    }
+  return groupInlineNodes(children, {
+    isInline,
+    createParent: (child) => jsx('element', { type: 'span' }, [child]),
+    appendChild: (parent, child) => parent.children.push(child),
   });
-  return nodes;
 }
-
-const inlineElements = [
-  'link',
-  'em',
-  'i',
-  'b',
-  'strong',
-  'u',
-  's',
-  'sub',
-  'sup',
-  'code',
-];
-
-const isGlobalInline = (node) => inlineElements.includes(node.type);
 
 // DESERIALIZERS
 const simpleLinkDeserializer = (el) => {
   let parent = el;
 
-  let children = Array.from(parent.childNodes)
-    .map((el) => deserialize(el))
-    .flat();
-
+  let children = deserializeChildren(parent);
   if (!children.length) children = [''];
 
   const attrs = {
@@ -106,8 +70,6 @@ const spanTagDeserializer = (el) => {
     return jsx('text', {}, ' ');
   }
   children = deserializeChildren(el);
-  // whitespace is replaced by deserialize() with null;
-  children = children.map((c) => (c === null ? ' ' : c));
 
   // Handle Google Docs' <sub> formatting
   if (style.replace(/\s/g, '').indexOf('vertical-align:sub') > -1) {
@@ -119,7 +81,7 @@ const spanTagDeserializer = (el) => {
 };
 
 const blockTagDeserializer = (tagname) => (el) => {
-  let children = deserializeChildren(el).filter((n) => n !== null);
+  let children = jsx('fragment', {}, deserializeChildren(el));
 
   if (
     ['td', 'th'].includes(tagname) &&
@@ -133,11 +95,10 @@ const blockTagDeserializer = (tagname) => (el) => {
     children = [p];
   }
 
-  const isInline = (n) =>
-    typeof n === 'string' || Text.isText(n) || isGlobalInline(n);
   const hasBlockChild = children.filter((n) => !isInline(n)).length > 0;
-
   if (hasBlockChild) {
+    // ignore whitespace and group inline elements in block context
+    children = children.filter((x) => x.text !== ' ');
     children = normalizeBlockNodes(children);
   }
 
@@ -237,8 +198,8 @@ const deserialize = (el) => {
     // instead of === '\n' we use isWhitespace for when deserializing tables
     // from Calc and other similar cases
     if (isWhitespace(el.textContent)) {
-      // if it's empty text between 2 tags, it should be ignored
-      return null;
+      // normalize whitespace between 2 tags to a single space
+      return ' ';
     }
     return el.textContent
       .replace(/\n$/g, ' ')
@@ -259,18 +220,11 @@ const deserialize = (el) => {
   return deserializeChildren(el); // fallback deserializer
 };
 
-const createCell = (type, rawValue) => {
-  const value = rawValue.map(function (el) {
-    if (typeof el === 'string') {
-      return { text: el };
-    } else {
-      return el;
-    }
-  });
+const createCell = (type, value) => {
   return {
     key: getId(),
     type: type,
-    value: value,
+    value: jsx('fragment', {}, value),
   };
 };
 
@@ -296,9 +250,7 @@ const slateTableBlock = (elem) => {
         const cells = [];
         for (const cell of tchild.children) {
           const cellType = cell.tagName === 'TD' ? 'data' : 'header';
-          const cellValue = Array.from(cell.childNodes)
-            .map(deserialize)
-            .filter((x) => x);
+          const cellValue = deserializeChildren(cell);
           cells.push(createCell(cellType, cellValue));
         }
         rows.push({ key: getId(), cells });
@@ -315,6 +267,7 @@ const slateTextBlock = (elem) => {
   if (!Array.isArray(value)) {
     value = [value];
   }
+  value = jsx('fragment', {}, value);
   block['@type'] = 'slate';
   block.value = value;
   block.plaintext = elem.textContent;
