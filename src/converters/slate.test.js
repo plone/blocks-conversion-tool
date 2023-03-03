@@ -217,6 +217,13 @@ describe('slateTextBlock processing a span', () => {
     expect(valueElement['text']).toBe(' ');
   });
 
+  test('without children nodes will return undefined', () => {
+    const elem = elementFromString('<span></span>');
+    const result = slateTextBlock(elem);
+    const valueElement = result.value;
+    expect(valueElement).toStrictEqual([]);
+  });
+
   test('with other inline elements', () => {
     const elem = elementFromString(
       '<span>Hello <strong>world</strong>!</span>',
@@ -252,6 +259,16 @@ describe('slateTextBlock processing a span', () => {
     const supElement = valueElement.children[0];
     expect(supElement['type']).toBe('sub');
     expect(supElement['children'][0]['text']).toBe('Hello world!');
+  });
+
+  test('inside another element with an empty value will drop empty span', () => {
+    const elem = elementFromString('<p><span>Foo</span><span></span></p>');
+    const result = slateTextBlock(elem);
+    const valueElement = result.value[0];
+    expect(valueElement['type']).toBe('p');
+    expect(valueElement['children']).toHaveLength(1);
+    expect(valueElement['children'][0]['type']).toBe('span');
+    expect(valueElement['children'][0]['children'][0]['text']).toBe('Foo');
   });
 });
 

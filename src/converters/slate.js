@@ -70,14 +70,15 @@ const spanTagDeserializer = (el) => {
     return jsx('text', {}, ' ');
   }
   children = deserializeChildren(el);
-
-  // Handle Google Docs' <sub> formatting
-  if (style.replace(/\s/g, '').indexOf('vertical-align:sub') > -1) {
-    children = jsx('element', { type: 'sub' }, children);
-  } else if (style.replace(/\s/g, '').indexOf('vertical-align:sup') > -1) {
-    children = jsx('element', { type: 'sup' }, children);
+  if (children.length > 0) {
+    // Handle Google Docs' <sub> formatting
+    if (style.replace(/\s/g, '').indexOf('vertical-align:sub') > -1) {
+      children = jsx('element', { type: 'sub' }, children);
+    } else if (style.replace(/\s/g, '').indexOf('vertical-align:sup') > -1) {
+      children = jsx('element', { type: 'sup' }, children);
+    }
+    return jsx('element', { type: 'span' }, children);
   }
-  return jsx('element', { type: 'span' }, children);
 };
 
 const blockTagDeserializer = (tagname) => (el) => {
