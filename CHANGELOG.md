@@ -1,3 +1,21 @@
+### [0.4.5](https://github.com/plone/blocks-conversion-tool/compare/0.4.4...0.4.5) (2023-03-03)
+
+
+### Bug Fixes
+
+* Fix [#20](https://github.com/plone/blocks-conversion-tool/issues/20) by dropping span elements without any value ([442ee31](https://github.com/plone/blocks-conversion-tool/commit/442ee31d77128809d6f6fb5302da0cc9de72f1ef))
+* Fix [#21](https://github.com/plone/blocks-conversion-tool/issues/21) by unwrapping images inside span ([78474aa](https://github.com/plone/blocks-conversion-tool/commit/78474aa6beb57e9a4e1aa5940a42e75cfdc317ba))
+* Fix broken result when there is a div inside a table cell ([5aba8ce](https://github.com/plone/blocks-conversion-tool/commit/5aba8ce0ca77deb326f6eff7e9567ba3910e568a))
+* Fix handling of whitespace between tags ([5469f9d](https://github.com/plone/blocks-conversion-tool/commit/5469f9d2f8c7e9269d0eff05be000ad88c539d50))
+* Fix issues [#16](https://github.com/plone/blocks-conversion-tool/issues/16) and [#17](https://github.com/plone/blocks-conversion-tool/issues/17) by placing text and inline elements outside a block element into paragraphs ([34c602a](https://github.com/plone/blocks-conversion-tool/commit/34c602a1dcae5da9e4801a94e822ae621208a00d))
+
+
+### Maintenance
+
+* Add .editorconfig ([b09d3ac](https://github.com/plone/blocks-conversion-tool/commit/b09d3ac01078fcfcb6dfb39373e05e4145878724))
+* Add Jest debugger for VSCode ([ff2258c](https://github.com/plone/blocks-conversion-tool/commit/ff2258cb15769157ff26a9c9080ac5f8f3fd5daf))
+* Update GitHub Actions ([c27cf30](https://github.com/plone/blocks-conversion-tool/commit/c27cf3028ab3d23f011f47da600e2d8da181d5da))
+
 ### [0.4.4](https://github.com/plone/blocks-conversion-tool/compare/0.4.3...0.4.4) (2022-11-28)
 
 
