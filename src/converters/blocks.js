@@ -83,4 +83,16 @@ const videoBlock = (elem) => {
   return block;
 };
 
-export { iframeBlock, imageBlock, videoBlock, getYTVideoId };
+const elementsWithConverters = {
+  IMG: imageBlock,
+  VIDEO: videoBlock,
+  IFRAME: iframeBlock,
+};
+
+export {
+  iframeBlock,
+  imageBlock,
+  videoBlock,
+  getYTVideoId,
+  elementsWithConverters,
+};

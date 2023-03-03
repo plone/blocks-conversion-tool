@@ -1,5 +1,6 @@
 import { jsx } from 'slate-hyperscript';
 import { Text } from 'slate';
+import { elementsWithConverters } from './blocks';
 import {
   groupInlineNodes,
   isWhitespace,
@@ -61,14 +62,20 @@ const bTagDeserializer = (el) => {
 const spanTagDeserializer = (el) => {
   const style = el.getAttribute('style') || '';
   let children = el.childNodes;
-  if (
-    // handle formatting from OpenOffice
-    children.length === 1 &&
-    children[0].nodeType === TEXT_NODE &&
-    children[0].textContent === '\n'
-  ) {
-    return jsx('text', {}, ' ');
+  if (children.length === 1) {
+    const child = children[0];
+    if (
+      // handle formatting from OpenOffice
+      child.nodeType === TEXT_NODE &&
+      child.textContent === '\n'
+    ) {
+      return jsx('text', {}, ' ');
+    } else if (elementsWithConverters.hasOwnProperty(child.tagName)) {
+      // If we have a child element that has its own converter, use it
+      return elementsWithConverters[child.tagName](child);
+    }
   }
+
   children = deserializeChildren(el);
   if (children.length > 0) {
     // Handle Google Docs' <sub> formatting
@@ -82,7 +89,12 @@ const spanTagDeserializer = (el) => {
 };
 
 const blockTagDeserializer = (tagname) => (el) => {
-  let children = jsx('fragment', {}, deserializeChildren(el));
+  let children = deserializeChildren(el);
+  // Check if we already have a block information
+  if (children.length == 1 && children[0].hasOwnProperty('@type')) {
+    return children[0];
+  }
+  children = jsx('fragment', {}, children);
 
   if (
     ['td', 'th'].includes(tagname) &&
@@ -265,7 +277,13 @@ const slateTableBlock = (elem) => {
 const slateTextBlock = (elem) => {
   const block = {};
   let value = deserialize(elem);
-  if (!Array.isArray(value)) {
+  if (typeof value === 'object' && value.hasOwnProperty('@type')) {
+    // Return block information if it was processed somewhere else
+    // in the codebase
+    if (['image', 'html', 'video'].includes(value['@type'])) {
+      return value;
+    }
+  } else if (!Array.isArray(value)) {
     value = [value];
   }
   value = jsx('fragment', {}, value);

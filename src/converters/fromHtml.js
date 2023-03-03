@@ -87,13 +87,21 @@ const convertFromHTML = (input, defaultTextBlock) => {
   // convert to blocks
   for (const el of elements) {
     const children = el.childNodes;
+    let keepWrapper = el.textContent ? true : false;
     for (const child of children) {
+      // With children nodes, we keep the wrapper only
+      // if at least one child is not  in elementsWithConverters
+      keepWrapper = keepWrapper || false;
       if (elementsWithConverters.includes(child.tagName)) {
         el.removeChild(child);
         result.push(blockFromElement(child, defaultTextBlock));
+      } else {
+        keepWrapper = true;
       }
     }
-    result.push(blockFromElement(el, defaultTextBlock));
+    if (keepWrapper) {
+      result.push(blockFromElement(el, defaultTextBlock));
+    }
   }
   return result;
 };

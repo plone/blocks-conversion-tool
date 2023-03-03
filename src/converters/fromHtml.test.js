@@ -82,7 +82,7 @@ describe('convertFromHTML parsing html with images nested in h2', () => {
     const result = convertFromHTML(html, 'draftjs');
 
     test('will return an array of blocks', () => {
-      expect(result).toHaveLength(10);
+      expect(result).toHaveLength(8);
     });
 
     test('will have a first block with an image', () => {
@@ -113,7 +113,7 @@ describe('convertFromHTML parsing html with images nested in h2', () => {
     const result = convertFromHTML(html, 'slate');
 
     test('will return an array of blocks', () => {
-      expect(result).toHaveLength(10);
+      expect(result).toHaveLength(8);
     });
 
     test('will have a first block with an image', () => {
@@ -326,6 +326,44 @@ describe('convertFromHTML parsing whitespace inside unknown tags', () => {
       { text: ' ' },
       { type: 'strong', children: [{ text: 'text' }] },
       { text: ' ' },
+    ]);
+  });
+});
+
+describe('convertFromHTML parsing image inside a p element', () => {
+  const html = '<p><img src="image.jpeg"></p>';
+
+  describe('returns a block with an image', () => {
+    const result = convertFromHTML(html, 'slate');
+    expect(result).toHaveLength(1);
+    expect(result).toEqual([
+      {
+        '@type': 'image',
+        align: 'center',
+        alt: '',
+        size: 'l',
+        title: '',
+        url: 'image.jpeg',
+      },
+    ]);
+  });
+});
+
+describe('convertFromHTML parsing image inside a span element', () => {
+  const html = '<p><span><img src="image.jpeg"></span></p>';
+
+  describe('returns valid result preserving the whitespace', () => {
+    const result = convertFromHTML(html, 'slate');
+    expect(result).toHaveLength(1);
+    expect(result).toEqual([
+      {
+        '@type': 'image',
+        align: 'center',
+        alt: '',
+        size: 'l',
+        title: '',
+        url: 'image.jpeg',
+      },
     ]);
   });
 });
