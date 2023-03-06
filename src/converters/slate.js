@@ -148,7 +148,21 @@ const bodyTagDeserializer = (el) => {
 };
 
 const divTagDeserializer = (el) => {
-  const children = Array.from(el.childNodes)
+  let children = el.childNodes;
+  if (children.length === 1) {
+    const child = children[0];
+    if (
+      // handle formatting from OpenOffice
+      child.nodeType === TEXT_NODE &&
+      child.textContent === '\n'
+    ) {
+      return jsx('text', {}, ' ');
+    } else if (elementsWithConverters.hasOwnProperty(child.tagName)) {
+      // If we have a child element that has its own converter, use it
+      return elementsWithConverters[child.tagName](child);
+    }
+  }
+  children = Array.from(children)
     .map((child) => {
       if (child.nodeType === TEXT_NODE) {
         let value = deserialize(child);

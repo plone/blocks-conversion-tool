@@ -14,10 +14,41 @@ const parser = new DOMParser();
 
 global.document = new JSDOM('...').window.document;
 
-const TEXT = 3;
+const TEXT_NODE = 3;
 const COMMENT = 8;
 
 const elementsWithConverters = ['IMG', 'VIDEO', 'TABLE', 'IFRAME'];
+const elementsShouldHaveText = [
+  'B',
+  'BLOCKQUOTE',
+  'BODY',
+  'CODE',
+  'DEL',
+  'DIV',
+  'EM',
+  'H1',
+  'H2',
+  'H3',
+  'H4',
+  'H5',
+  'H6',
+  'I',
+  'P',
+  'PRE',
+  'S',
+  'SPAN',
+  'STRONG',
+  'SUB',
+  'SUP',
+  'U',
+];
+
+const shouldKeepWrapper = (el) => {
+  if (elementsShouldHaveText.includes(el.tagName)) {
+    return el.textContent ? true : false;
+  }
+  return true;
+};
 
 const blockFromElement = (el, defaultTextBlock) => {
   let textBlock = slateTextBlock;
@@ -52,13 +83,13 @@ const skipCommentsAndWhitespace = (elements) => {
     (node) =>
       !(
         node.nodeType === COMMENT ||
-        (node.nodeType === TEXT && isWhitespace(node.textContent))
+        (node.nodeType === TEXT_NODE && isWhitespace(node.textContent))
       ),
   );
 };
 
 const isInline = (n) =>
-  n.nodeType === TEXT || isGlobalInline(n.tagName.toLowerCase());
+  n.nodeType === TEXT_NODE || isGlobalInline(n.tagName.toLowerCase());
 
 const convertFromHTML = (input, defaultTextBlock) => {
   const document = parser.parseFromString(input, 'text/html');
@@ -87,7 +118,7 @@ const convertFromHTML = (input, defaultTextBlock) => {
   // convert to blocks
   for (const el of elements) {
     const children = el.childNodes;
-    let keepWrapper = el.textContent ? true : false;
+    let keepWrapper = shouldKeepWrapper(el);
     for (const child of children) {
       // With children nodes, we keep the wrapper only
       // if at least one child is not  in elementsWithConverters

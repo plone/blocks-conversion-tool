@@ -82,7 +82,7 @@ describe('convertFromHTML parsing html with images nested in h2', () => {
     const result = convertFromHTML(html, 'draftjs');
 
     test('will return an array of blocks', () => {
-      expect(result).toHaveLength(8);
+      expect(result).toHaveLength(10);
     });
 
     test('will have a first block with an image', () => {
@@ -113,7 +113,7 @@ describe('convertFromHTML parsing html with images nested in h2', () => {
     const result = convertFromHTML(html, 'slate');
 
     test('will return an array of blocks', () => {
-      expect(result).toHaveLength(8);
+      expect(result).toHaveLength(10);
     });
 
     test('will have a first block with an image', () => {
@@ -330,10 +330,12 @@ describe('convertFromHTML parsing whitespace inside unknown tags', () => {
   });
 });
 
-describe('convertFromHTML parsing image inside a p element', () => {
-  const html = '<p><img src="image.jpeg"></p>';
+describe('convertFromHTML parsing image', () => {
+  // https://github.com/plone/blocks-conversion-tool/issues/21
 
-  describe('returns a block with an image', () => {
+  describe('on its own', () => {
+    const html = '<img src="image.jpeg">';
+
     const result = convertFromHTML(html, 'slate');
     expect(result).toHaveLength(1);
     expect(result).toEqual([
@@ -347,12 +349,63 @@ describe('convertFromHTML parsing image inside a p element', () => {
       },
     ]);
   });
-});
 
-describe('convertFromHTML parsing image inside a span element', () => {
-  const html = '<p><span><img src="image.jpeg"></span></p>';
+  describe('inside a p element', () => {
+    const html = '<p><img src="image.jpeg"></p>';
 
-  describe('returns valid result preserving the whitespace', () => {
+    const result = convertFromHTML(html, 'slate');
+    expect(result).toHaveLength(1);
+    expect(result).toEqual([
+      {
+        '@type': 'image',
+        align: 'center',
+        alt: '',
+        size: 'l',
+        title: '',
+        url: 'image.jpeg',
+      },
+    ]);
+  });
+
+  describe('inside a span element', () => {
+    const html = '<p><span><img src="image.jpeg"></span></p>';
+
+    const result = convertFromHTML(html, 'slate');
+    expect(result).toHaveLength(1);
+    expect(result).toEqual([
+      {
+        '@type': 'image',
+        align: 'center',
+        alt: '',
+        size: 'l',
+        title: '',
+        url: 'image.jpeg',
+      },
+    ]);
+  });
+
+  describe('inside a div element', () => {
+    // https://github.com/plone/blocks-conversion-tool/issues/21#issuecomment-1455176066
+    const html = '<div><img src="image.jpeg"></div>';
+
+    const result = convertFromHTML(html, 'slate');
+    expect(result).toHaveLength(1);
+    expect(result).toEqual([
+      {
+        '@type': 'image',
+        align: 'center',
+        alt: '',
+        size: 'l',
+        title: '',
+        url: 'image.jpeg',
+      },
+    ]);
+  });
+
+  describe('inside a nested div element', () => {
+    // https://github.com/plone/blocks-conversion-tool/issues/21#issuecomment-1455176066
+    const html = '<div><div><img src="image.jpeg"></div></div>';
+
     const result = convertFromHTML(html, 'slate');
     expect(result).toHaveLength(1);
     expect(result).toEqual([
