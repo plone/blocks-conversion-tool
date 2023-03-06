@@ -1,3 +1,11 @@
+### [0.4.6](https://github.com/plone/blocks-conversion-tool/compare/0.4.5...0.4.6) (2023-03-06)
+
+
+### Bug Fixes
+
+* Fix issue [#21](https://github.com/plone/blocks-conversion-tool/issues/21) by implementing a better parser for img and video blocks. ([b49614e](https://github.com/plone/blocks-conversion-tool/commit/b49614e517aa07db32c721ae049a300d34fd3832))
+* Fix issue [#22](https://github.com/plone/blocks-conversion-tool/issues/22), importing from blocks.js instead of blocks ([ebea336](https://github.com/plone/blocks-conversion-tool/commit/ebea3366520dab02659678844bb4ff2253687fc4))
+
 ### [0.4.5](https://github.com/plone/blocks-conversion-tool/compare/0.4.4...0.4.5) (2023-03-03)
 
 
