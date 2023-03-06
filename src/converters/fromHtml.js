@@ -127,7 +127,15 @@ const convertFromHTML = (input, defaultTextBlock) => {
         el.removeChild(child);
         result.push(blockFromElement(child, defaultTextBlock));
       } else {
-        keepWrapper = true;
+        keepWrapper = shouldKeepWrapper(child);
+      }
+      // Check for grandchild nodes containing elementsWithConverters
+      const gchildren = child.childNodes;
+      for (const gchild of gchildren) {
+        if (elementsWithConverters.includes(gchild.tagName)) {
+          child.removeChild(gchild);
+          result.push(blockFromElement(gchild, defaultTextBlock));
+        }
       }
     }
     if (keepWrapper) {
