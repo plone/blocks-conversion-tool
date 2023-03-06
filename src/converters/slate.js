@@ -1,6 +1,6 @@
 import { jsx } from 'slate-hyperscript';
 import { Text } from 'slate';
-import { elementsWithConverters } from './blocks';
+import { elementsWithConverters } from './blocks.js';
 import {
   groupInlineNodes,
   isWhitespace,
