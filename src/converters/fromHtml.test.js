@@ -420,6 +420,26 @@ describe('convertFromHTML parsing image', () => {
     ]);
   });
 
+  describe('inside a nested div element with line breaks', () => {
+    const html = `<div>
+    <div>
+    <p><span><img src="image.jpeg"  /></span></p>
+    </div>
+    </div>
+    `;
+
+    const result = convertFromHTML(html, 'slate');
+    expect(result).toHaveLength(2);
+    expect(result[0]).toEqual({
+      '@type': 'image',
+      align: 'center',
+      alt: '',
+      size: 'l',
+      title: '',
+      url: 'image.jpeg',
+    });
+  });
+
   describe('inside a nested span element containing valid text', () => {
     const html = '<p><span><img src="image.jpeg" />text</span></p>';
 
@@ -434,19 +454,55 @@ describe('convertFromHTML parsing image', () => {
       url: 'image.jpeg',
     });
   });
-});
 
-describe('inside a nested span element, with a sibling containing valid text', () => {
-  const html = '<p><span><img src="image.jpeg" /></span><span>text</span></p>';
+  describe('inside a nested span element, with a sibling containing valid text', () => {
+    const html =
+      '<p><span><img src="image.jpeg" /></span><span>text</span></p>';
 
-  const result = convertFromHTML(html, 'slate');
-  expect(result).toHaveLength(2);
-  expect(result[0]).toEqual({
-    '@type': 'image',
-    align: 'center',
-    alt: '',
-    size: 'l',
-    title: '',
-    url: 'image.jpeg',
+    const result = convertFromHTML(html, 'slate');
+    expect(result).toHaveLength(2);
+    expect(result[0]).toEqual({
+      '@type': 'image',
+      align: 'center',
+      alt: '',
+      size: 'l',
+      title: '',
+      url: 'image.jpeg',
+    });
+  });
+
+  describe('inside a nested link element should add the href property', () => {
+    const html =
+      '<p><a href="https://plone.org"><img src="image.jpeg"></a></p>';
+
+    const result = convertFromHTML(html, 'slate');
+    expect(result).toHaveLength(1);
+    expect(result).toEqual([
+      {
+        '@type': 'image',
+        align: 'center',
+        alt: '',
+        href: { url: 'https://plone.org' },
+        size: 'l',
+        title: '',
+        url: 'image.jpeg',
+      },
+    ]);
+  });
+
+  describe('inside a table', () => {
+    const html =
+      '<table><tr><td><div><img src="image.jpeg" /></div></td></tr></table>';
+
+    const result = convertFromHTML(html, 'slate');
+    expect(result).toHaveLength(2);
+    expect(result[0]).toEqual({
+      '@type': 'image',
+      align: 'center',
+      alt: '',
+      size: 'l',
+      title: '',
+      url: 'image.jpeg',
+    });
   });
 });

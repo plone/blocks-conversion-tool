@@ -1,7 +1,7 @@
 import { alignFromClassName, scaleFromUrl } from '../helpers/image.js';
 import { getYTVideoId } from '../helpers/video.js';
 
-const imageBlock = (elem) => {
+const imageBlock = (elem, href) => {
   // strip /@@images/image if present
   const url = elem.src.split('/@@images')[0];
 
@@ -11,6 +11,10 @@ const imageBlock = (elem) => {
     alt: elem.alt,
     title: elem.title,
   };
+
+  if (href) {
+    block.href = { url: href };
+  }
 
   if (elem.dataset.href != null) {
     block.href = elem.dataset.href;

@@ -50,7 +50,7 @@ const shouldKeepWrapper = (el) => {
   return true;
 };
 
-const blockFromElement = (el, defaultTextBlock) => {
+const blockFromElement = (el, defaultTextBlock, href) => {
   let textBlock = slateTextBlock;
   let tableBlock = slateTableBlock;
   if (defaultTextBlock === 'draftjs') {
@@ -60,7 +60,7 @@ const blockFromElement = (el, defaultTextBlock) => {
   let raw = {};
   switch (el.tagName) {
     case 'IMG':
-      raw = imageBlock(el);
+      raw = imageBlock(el, href);
       break;
     case 'VIDEO':
       raw = videoBlock(el);
@@ -91,6 +91,35 @@ const skipCommentsAndWhitespace = (elements) => {
 const isInline = (n) =>
   n.nodeType === TEXT_NODE || isGlobalInline(n.tagName.toLowerCase());
 
+const extractElementsWithConverters = (el, defaultTextBlock, href) => {
+  const result = [];
+  if (elementsWithConverters.includes(el.tagName)) {
+    result.push(blockFromElement(el, defaultTextBlock, href));
+  } else {
+    const children = el.childNodes;
+    if (el.tagName === 'A') {
+      href = el.getAttribute('href');
+    }
+    for (const child of children) {
+      if (elementsWithConverters.includes(child.tagName)) {
+        el.removeChild(child);
+        result.push(blockFromElement(child, defaultTextBlock, href));
+      } else {
+        const tmpResult = extractElementsWithConverters(
+          child,
+          defaultTextBlock,
+          href,
+        );
+        if (tmpResult.length > 0) {
+          result.push(...tmpResult);
+        }
+      }
+    }
+  }
+
+  return result;
+};
+
 const convertFromHTML = (input, defaultTextBlock) => {
   const document = parser.parseFromString(input, 'text/html');
   const result = [];
@@ -118,24 +147,21 @@ const convertFromHTML = (input, defaultTextBlock) => {
   // convert to blocks
   for (const el of elements) {
     const children = el.childNodes;
+    const href = el.getAttribute('href');
     let keepWrapper = shouldKeepWrapper(el);
     for (const child of children) {
       // With children nodes, we keep the wrapper only
       // if at least one child is not  in elementsWithConverters
       keepWrapper = keepWrapper || false;
-      if (elementsWithConverters.includes(child.tagName)) {
-        el.removeChild(child);
-        result.push(blockFromElement(child, defaultTextBlock));
+      const tmpResult = extractElementsWithConverters(
+        child,
+        defaultTextBlock,
+        href,
+      );
+      if (tmpResult) {
+        result.push(...tmpResult);
       } else {
         keepWrapper = shouldKeepWrapper(child);
-      }
-      // Check for grandchild nodes containing elementsWithConverters
-      const gchildren = child.childNodes;
-      for (const gchild of gchildren) {
-        if (elementsWithConverters.includes(gchild.tagName)) {
-          child.removeChild(gchild);
-          result.push(blockFromElement(gchild, defaultTextBlock));
-        }
       }
     }
     if (keepWrapper) {
