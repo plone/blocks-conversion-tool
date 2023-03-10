@@ -45,7 +45,8 @@ const elementsShouldHaveText = [
 
 const shouldKeepWrapper = (el) => {
   if (elementsShouldHaveText.includes(el.tagName)) {
-    return el.textContent ? true : false;
+    const textContent = el.textContent.trim();
+    return textContent ? true : false;
   }
   return true;
 };

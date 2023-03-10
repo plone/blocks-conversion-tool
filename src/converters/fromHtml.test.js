@@ -25,7 +25,7 @@ describe('convertFromHTML parsing html', () => {
     const result = convertFromHTML(html, 'draftjs');
 
     test('will return an array of blocks', () => {
-      expect(result).toHaveLength(11);
+      expect(result).toHaveLength(10);
     });
 
     test('will have a first block with text content', () => {
@@ -46,7 +46,7 @@ describe('convertFromHTML parsing html', () => {
     const result = convertFromHTML(html, 'slate');
 
     test('will return an array of blocks', () => {
-      expect(result).toHaveLength(11);
+      expect(result).toHaveLength(10);
     });
 
     test('will have a first block with text content', () => {
@@ -220,7 +220,7 @@ describe('convertFromHTML parsing html with nested divs', () => {
     const result = convertFromHTML(html, 'slate');
 
     test('will return an array of blocks', () => {
-      expect(result).toHaveLength(8);
+      expect(result).toHaveLength(7);
     });
 
     test('will have a paragraph with a nested p', () => {
@@ -429,7 +429,7 @@ describe('convertFromHTML parsing image', () => {
     `;
 
     const result = convertFromHTML(html, 'slate');
-    expect(result).toHaveLength(2);
+    expect(result).toHaveLength(1);
     expect(result[0]).toEqual({
       '@type': 'image',
       align: 'center',
@@ -504,5 +504,26 @@ describe('convertFromHTML parsing image', () => {
       title: '',
       url: 'image.jpeg',
     });
+  });
+});
+
+describe('convertFromHTML parsing nested tags', () => {
+  describe('with an image and without line breaks', () => {
+    const html = `<div>
+    <div><p><span><img src="image.jpg"  /></span></p></div>
+    <p ><span><a href="link"><span><span><span>Text</span></span></span></a>, </span><a href="link"><span>text</span></a>, <a href="link"><span><span>text</span></span> </a></p>
+    </div>`;
+    const result = convertFromHTML(html, 'slate');
+    expect(result).toHaveLength(2);
+  });
+  describe('with an image and with an additional line break', () => {
+    const html = `<div>
+    <div>
+    <p><span><img src="image.jpg"  /></span></p>
+    </div>
+    <p ><span><a href="link"><span><span><span>Text</span></span></span></a>, </span><a href="link"><span>text</span></a>, <a href="link"><span><span>text</span></span> </a></p>
+    </div>`;
+    const result = convertFromHTML(html, 'slate');
+    expect(result).toHaveLength(2);
   });
 });
