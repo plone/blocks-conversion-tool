@@ -8,11 +8,9 @@
       "name": "Start Blocks Conversion Tool",
       "type": "node",
       "request": "launch",
-      "runtimeArgs": [
-        "./src/server.js",
-      ],
+      "runtimeArgs": ["./src/server.js"],
       "console": "integratedTerminal",
-      "internalConsoleOptions": "neverOpen",
+      "internalConsoleOptions": "neverOpen"
     },
     {
       "name": "Run Tests",
@@ -25,7 +23,7 @@
         "--watchAll"
       ],
       "console": "integratedTerminal",
-      "internalConsoleOptions": "neverOpen",
+      "internalConsoleOptions": "neverOpen"
     },
     {
       "name": "Debug Jest Tests",
