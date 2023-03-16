@@ -128,6 +128,46 @@ describe('slateTextBlock processing a paragraph', () => {
       ]);
     });
   });
+
+  describe('with old TinyMCE settings for bold', () => {
+    const elem = elementFromString(
+      '<p>Normal Text <span style="font-weight: bold;">Bold Text</span> more normal text</p>',
+    );
+
+    test('will return one slate block with simple text', () => {
+      const result = slateTextBlock(elem);
+      expect(result.value).toEqual([
+        {
+          type: 'p',
+          children: [
+            { text: 'Normal Text ' },
+            { children: [{ text: 'Bold Text' }], type: 'strong' },
+            { text: ' more normal text' },
+          ],
+        },
+      ]);
+    });
+  });
+
+  describe('with old TinyMCE settings for italic', () => {
+    const elem = elementFromString(
+      '<p>Normal Text <span style="font-style: italic;">Italic Text</span> more normal text</p>',
+    );
+
+    test('will return one slate block with simple text', () => {
+      const result = slateTextBlock(elem);
+      expect(result.value).toEqual([
+        {
+          type: 'p',
+          children: [
+            { text: 'Normal Text ' },
+            { children: [{ text: 'Italic Text' }], type: 'em' },
+            { text: ' more normal text' },
+          ],
+        },
+      ]);
+    });
+  });
 });
 
 describe('slateTextBlock processing a simple pre block', () => {

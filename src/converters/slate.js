@@ -60,7 +60,7 @@ const bTagDeserializer = (el) => {
 };
 
 const spanTagDeserializer = (el) => {
-  const style = el.getAttribute('style') || '';
+  const style = (el.getAttribute('style') || '').replace(/\s/g, '');
   let children = el.childNodes;
   if (children.length === 1) {
     const child = children[0];
@@ -73,15 +73,22 @@ const spanTagDeserializer = (el) => {
     } else if (elementsWithConverters.hasOwnProperty(child.tagName)) {
       // If we have a child element that has its own converter, use it
       return elementsWithConverters[child.tagName](child);
+    } else if (style.indexOf('font-weight:bold') > -1) {
+      // Handle TinyMCE' bold formatting
+      return jsx('element', { type: 'strong' }, child.textContent);
+    } else if (style.indexOf('font-style:italic') > -1) {
+      // Handle TinyMCE' italic formatting
+      return jsx('element', { type: 'em' }, child.textContent);
     }
   }
 
   children = deserializeChildren(el);
   if (children.length > 0) {
-    // Handle Google Docs' <sub> formatting
-    if (style.replace(/\s/g, '').indexOf('vertical-align:sub') > -1) {
+    if (style.indexOf('vertical-align:sub') > -1) {
+      // Handle Google Docs' <sub> formatting
       children = jsx('element', { type: 'sub' }, children);
-    } else if (style.replace(/\s/g, '').indexOf('vertical-align:sup') > -1) {
+    } else if (style.indexOf('vertical-align:sup') > -1) {
+      // Handle Google Docs' <sup> formatting
       children = jsx('element', { type: 'sup' }, children);
     }
     return jsx('element', { type: 'span' }, children);
