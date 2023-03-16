@@ -94,7 +94,19 @@ const isInline = (n) =>
 
 const extractElementsWithConverters = (el, defaultTextBlock, href) => {
   const result = [];
-  if (elementsWithConverters.includes(el.tagName)) {
+  if (el.tagName === 'TABLE') {
+    for (const child of el.childNodes) {
+      const tmpResult = extractElementsWithConverters(
+        child,
+        defaultTextBlock,
+        href,
+      );
+      if (tmpResult.length > 0) {
+        result.push(...tmpResult);
+      }
+    }
+    result.push(blockFromElement(el, defaultTextBlock, href));
+  } else if (elementsWithConverters.includes(el.tagName)) {
     result.push(blockFromElement(el, defaultTextBlock, href));
   } else {
     const children = el.childNodes;
@@ -161,8 +173,6 @@ const convertFromHTML = (input, defaultTextBlock) => {
       );
       if (tmpResult) {
         result.push(...tmpResult);
-      } else {
-        keepWrapper = shouldKeepWrapper(child);
       }
     }
     if (keepWrapper) {

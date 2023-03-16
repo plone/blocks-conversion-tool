@@ -526,4 +526,21 @@ describe('convertFromHTML parsing nested tags', () => {
     const result = convertFromHTML(html, 'slate');
     expect(result).toHaveLength(2);
   });
+  describe('with paragraph, table and image blocks', () => {
+    const html = `<p>
+    <table>
+    <tbody>
+    <tr>
+    <td>
+    <div><img src="image.png" /></div>
+    </td>
+    </tr>
+    </tbody>
+    </table>
+    </p>`;
+    const result = convertFromHTML(html, 'slate');
+    expect(result).toHaveLength(2);
+    expect(result[0]['@type']).toBe('image');
+    expect(result[1]['@type']).toBe('slateTable');
+  });
 });
