@@ -543,4 +543,48 @@ describe('convertFromHTML parsing nested tags', () => {
     expect(result[0]['@type']).toBe('image');
     expect(result[1]['@type']).toBe('slateTable');
   });
+  describe('with paragraph, table and image blocks', () => {
+    const html = `<div>
+    <div>
+    <p>
+    <table>
+    <tbody>
+    <tr>
+    <td>
+    <div><img src="image.png"/></div>
+    </td>
+    </tr>
+    </tbody>
+    </table>
+    </p>
+    </div>
+    <p></p>
+    </div>`;
+    const result = convertFromHTML(html, 'slate');
+    expect(result).toHaveLength(2);
+    expect(result[0]['@type']).toBe('image');
+    expect(result[1]['@type']).toBe('slateTable');
+  });
+  describe('with paragraph, table, image blocks, and other paragraph', () => {
+    const html = `<div>
+    <p>
+    <table>
+    <tbody>
+    <tr>
+    <td>
+    <div><img src="image.png"/></div>
+    </td>
+    </tr>
+    </tbody>
+    </table>
+    </p>
+    <p></p>
+    <p>A text</p>
+    </div>`;
+    const result = convertFromHTML(html, 'slate');
+    expect(result).toHaveLength(3);
+    expect(result[0]['@type']).toBe('image');
+    expect(result[1]['@type']).toBe('slateTable');
+    expect(result[2]['@type']).toBe('slate');
+  });
 });

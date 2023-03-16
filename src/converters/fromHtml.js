@@ -94,40 +94,26 @@ const isInline = (n) =>
 
 const extractElementsWithConverters = (el, defaultTextBlock, href) => {
   const result = [];
-  if (el.tagName === 'TABLE') {
-    for (const child of el.childNodes) {
-      const tmpResult = extractElementsWithConverters(
-        child,
-        defaultTextBlock,
-        href,
-      );
-      if (tmpResult.length > 0) {
-        result.push(...tmpResult);
-      }
+  if (el.tagName === 'A') {
+    href = el.getAttribute('href');
+  }
+  // First, traverse all childNodes
+  for (const child of el.childNodes) {
+    const tmpResult = extractElementsWithConverters(
+      child,
+      defaultTextBlock,
+      href,
+    );
+    if (tmpResult.length > 0) {
+      result.push(...tmpResult);
+    }
+  }
+  if (elementsWithConverters.includes(el.tagName)) {
+    const parent = el.parentElement;
+    if (parent) {
+      parent.removeChild(el);
     }
     result.push(blockFromElement(el, defaultTextBlock, href));
-  } else if (elementsWithConverters.includes(el.tagName)) {
-    result.push(blockFromElement(el, defaultTextBlock, href));
-  } else {
-    const children = el.childNodes;
-    if (el.tagName === 'A') {
-      href = el.getAttribute('href');
-    }
-    for (const child of children) {
-      if (elementsWithConverters.includes(child.tagName)) {
-        el.removeChild(child);
-        result.push(blockFromElement(child, defaultTextBlock, href));
-      } else {
-        const tmpResult = extractElementsWithConverters(
-          child,
-          defaultTextBlock,
-          href,
-        );
-        if (tmpResult.length > 0) {
-          result.push(...tmpResult);
-        }
-      }
-    }
   }
 
   return result;
@@ -165,7 +151,6 @@ const convertFromHTML = (input, defaultTextBlock) => {
     for (const child of children) {
       // With children nodes, we keep the wrapper only
       // if at least one child is not  in elementsWithConverters
-      keepWrapper = keepWrapper || false;
       const tmpResult = extractElementsWithConverters(
         child,
         defaultTextBlock,
