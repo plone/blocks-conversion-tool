@@ -5,6 +5,29 @@
   "version": "0.2.0",
   "configurations": [
     {
+      "name": "Start Blocks Conversion Tool",
+      "type": "node",
+      "request": "launch",
+      "runtimeArgs": [
+        "./src/server.js",
+      ],
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen",
+    },
+    {
+      "name": "Run Tests",
+      "type": "node",
+      "request": "launch",
+      "runtimeArgs": [
+        "--experimental-vm-modules",
+        "${workspaceRoot}/node_modules/jest/bin/jest.js",
+        "--watch",
+        "--watchAll"
+      ],
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen",
+    },
+    {
       "name": "Debug Jest Tests",
       "type": "node",
       "request": "launch",
