@@ -14,8 +14,6 @@ const dom = new JSDOM();
 const DOMParser = dom.window.DOMParser;
 const parser = new DOMParser();
 
-global.document = dom.window.document;
-
 const TEXT_NODE = 3;
 const COMMENT = 8;
 
