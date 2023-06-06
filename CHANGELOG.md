@@ -1,3 +1,24 @@
+### [0.4.7](https://github.com/plone/blocks-conversion-tool/compare/0.4.6...0.4.7) (2023-06-06)
+
+
+### Bug Fixes
+
+* Additional cases related to [#21](https://github.com/plone/blocks-conversion-tool/issues/21) ([6e137f9](https://github.com/plone/blocks-conversion-tool/commit/6e137f9c2f41b08b659358ba6e36fb29f90f8931))
+* Empty inline elements break slate (Fixes [#30](https://github.com/plone/blocks-conversion-tool/issues/30)) ([e57b766](https://github.com/plone/blocks-conversion-tool/commit/e57b76612630e4c5e29d1b492688eaf6a92716cb))
+* Fix [#25](https://github.com/plone/blocks-conversion-tool/issues/25) by handling TinyMCE styling for strong and emphasis ([33a29e9](https://github.com/plone/blocks-conversion-tool/commit/33a29e9d4c92d96034be41c3b8ee3043e4148137))
+* Handle nested table with images ([c2ba89e](https://github.com/plone/blocks-conversion-tool/commit/c2ba89ea4067049732a3c08a562f4a623f486d74))
+* Handle nested table with sibling elements ([bc6a215](https://github.com/plone/blocks-conversion-tool/commit/bc6a215597654b94bff66a514b69efe7b733bc0e))
+* Image links converted with new image block format (Fixes [#29](https://github.com/plone/blocks-conversion-tool/issues/29)) ([407a411](https://github.com/plone/blocks-conversion-tool/commit/407a411c70517b6508fcbde7ec054254b3bbeb06))
+* Recursively search for IMAGE, VIDEO, IFRAME elements inside text blocks ([50b4290](https://github.com/plone/blocks-conversion-tool/commit/50b429085667094cc6f3d333aec938e0bc14e873))
+* Remove elements without any text content ([c085ebd](https://github.com/plone/blocks-conversion-tool/commit/c085ebd092e9abba768c09c78fa63829c426cf79))
+
+
+### Maintenance
+
+* Add more VSCode launch options ([09df260](https://github.com/plone/blocks-conversion-tool/commit/09df260922ed456938607f315a69b9e66fa9e68f))
+* Format .vscode/launch.json ([018a8d3](https://github.com/plone/blocks-conversion-tool/commit/018a8d3b53fdaec9571b78e4fccef5a36b428781))
+* remove not needed global.document ([a7ba51b](https://github.com/plone/blocks-conversion-tool/commit/a7ba51bc320f10ecc928285c63aac18993670cc2))
+
 ### [0.4.6](https://github.com/plone/blocks-conversion-tool/compare/0.4.5...0.4.6) (2023-03-06)
 
 
