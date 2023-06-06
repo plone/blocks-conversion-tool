@@ -9,10 +9,12 @@ import {
 } from '../helpers/dom.js';
 
 const { JSDOM } = jsdom;
-const DOMParser = new JSDOM().window.DOMParser;
+
+const dom = new JSDOM();
+const DOMParser = dom.window.DOMParser;
 const parser = new DOMParser();
 
-global.document = new JSDOM('...').window.document;
+global.document = dom.window.document;
 
 const TEXT_NODE = 3;
 const COMMENT = 8;

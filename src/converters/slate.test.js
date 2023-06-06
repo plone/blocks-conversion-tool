@@ -168,6 +168,18 @@ describe('slateTextBlock processing a paragraph', () => {
       ]);
     });
   });
+
+  describe('with an empty bold element in the text', () => {
+    const elem = elementFromString('<p>Hello world!<b></b></p>');
+
+    test('will have a nested structure in the value', () => {
+      const result = slateTextBlock(elem);
+      const valueElement = result.value[0];
+      expect(valueElement['type']).toBe('p');
+      expect(valueElement['children']).toHaveLength(1);
+      expect(valueElement['children'][0]['text']).toBe('Hello world!');
+    });
+  });
 });
 
 describe('slateTextBlock processing a simple pre block', () => {
@@ -446,13 +458,24 @@ describe('slateTextBlock processing a b', () => {
 });
 
 describe('slateTextBlock processing a strong', () => {
-  const elem = elementFromString('<strong>Hello world!</strong>');
+  describe('with valid content', () => {
+    const elem = elementFromString('<strong>Hello world!</strong>');
 
-  test('will have a nested structure in the value', () => {
-    const result = slateTextBlock(elem);
-    const valueElement = result.value[0];
-    expect(valueElement['type']).toBe('strong');
-    expect(valueElement['children'][0]['text']).toBe('Hello world!');
+    test('will have a nested structure in the value', () => {
+      const result = slateTextBlock(elem);
+      const valueElement = result.value[0];
+      expect(valueElement['type']).toBe('strong');
+      expect(valueElement['children'][0]['text']).toBe('Hello world!');
+    });
+  });
+  describe('with empty content', () => {
+    const elem = elementFromString('<strong></strong>');
+
+    test('will have a nested structure in the value', () => {
+      const result = slateTextBlock(elem);
+      const valueElement = result.value[0];
+      expect(valueElement['text']).toBe('');
+    });
   });
 });
 

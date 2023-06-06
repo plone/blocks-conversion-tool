@@ -23,7 +23,10 @@ const deserializeChildren = (parent) =>
 const createEmptyParagraph = () => jsx('element', { type: 'p' }, []);
 
 const isInline = (n) =>
-  typeof n === 'string' || Text.isText(n) || isGlobalInline(n.type);
+  typeof n === 'string' ||
+  Text.isText(n) ||
+  isGlobalInline(n.type) ||
+  isGlobalInline(n?.nodeName?.toLowerCase());
 
 function normalizeBlockNodes(children) {
   return groupInlineNodes(children, {
@@ -247,7 +250,9 @@ const deserialize = (el) => {
 
   const { nodeName } = el;
 
-  if (htmlTagsToSlate[nodeName]) {
+  if (isInline(el) && el.textContent === '') {
+    return '';
+  } else if (htmlTagsToSlate[nodeName]) {
     return htmlTagsToSlate[nodeName](el);
   }
 
