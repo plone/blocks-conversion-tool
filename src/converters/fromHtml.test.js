@@ -482,7 +482,12 @@ describe('convertFromHTML parsing image', () => {
         '@type': 'image',
         align: 'center',
         alt: '',
-        href: { url: 'https://plone.org' },
+        href: [
+          {
+            '@id': 'https://plone.org',
+            title: 'plone.org',
+          },
+        ],
         size: 'l',
         title: '',
         url: 'image.jpeg',

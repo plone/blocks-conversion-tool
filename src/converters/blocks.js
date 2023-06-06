@@ -13,7 +13,13 @@ const imageBlock = (elem, href) => {
   };
 
   if (href) {
-    block.href = { url: href };
+    const title = href.split('://')[1];
+    block.href = [
+      {
+        '@id': href,
+        title: title,
+      },
+    ];
   }
 
   if (elem.dataset.href != null) {
