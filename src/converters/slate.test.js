@@ -640,7 +640,9 @@ describe('slateTableBlock processing a simple table', () => {
     expect(rows[0].cells[0].key).toBeDefined();
     expect(rows[0].cells[0].type).toBe('data');
     expect(rows[0].cells[0].value).toHaveLength(1);
-    const value = rows[0].cells[0].value[0];
+    const parentValue = rows[0].cells[0].value[0];
+    expect(parentValue['type']).toBe('span');
+    const value = parentValue['children'][0];
     expect(value['text']).toBe('A value');
   });
 });
@@ -657,7 +659,10 @@ describe('slateTableBlock processing a table with whitespace', () => {
     const cells = rows[0].cells;
     expect(cells).toHaveLength(1);
     const cell = cells[0];
-    expect(cell.value).toEqual([{ text: 'A value\n\xa0' }]);
+    const parentValue = cell.value[0];
+    expect(parentValue['type']).toBe('span');
+    const value = parentValue['children'][0];
+    expect(value).toEqual({ text: 'A value' });
   });
 });
 
@@ -678,7 +683,9 @@ describe('slateTableBlock processing a table with a link', () => {
     expect(rows[0].cells).toHaveLength(1);
     expect(rows[0].cells[0].type).toBe('data');
     expect(rows[0].cells[0].value).toHaveLength(1);
-    const value = rows[0].cells[0].value[0];
+    const parentValue = rows[0].cells[0].value[0];
+    expect(parentValue['type']).toBe('span');
+    const value = parentValue['children'][0];
     expect(value['type']).toBe('link');
     expect(value['data']['url']).toBe('https://plone.org');
     expect(value['children'][0]['text']).toBe('Plone');
@@ -707,14 +714,18 @@ describe('slateTableBlock processing a table with a link', () => {
   test('first value is a text', () => {
     const result = slateTableBlock(elem);
     const rows = result.table.rows;
-    let value = rows[0].cells[0].value[0];
+    const parentValue = rows[0].cells[0].value[0];
+    expect(parentValue['type']).toBe('span');
+    const value = parentValue['children'][0];
     expect(value['text']).toBe('Plone ');
   });
 
-  test('second value is the link', () => {
+  test('second value is the span with the link', () => {
     const result = slateTableBlock(elem);
     const rows = result.table.rows;
-    let value = rows[0].cells[0].value[1];
+    const parentValue = rows[0].cells[0].value[1];
+    expect(parentValue['type']).toBe('span');
+    const value = parentValue['children'][0];
     expect(value['type']).toBe('link');
     expect(value['data']['url']).toBe('https://plone.org');
     expect(value['children'][0]['text']).toBe('site');
@@ -729,13 +740,20 @@ describe('slateTableBlock processing a table with text + sup', () => {
   test('will keep sup inline', () => {
     const result = slateTableBlock(elem);
     const cell = result.table.rows[0].cells[0];
-    expect(cell.value).toEqual([
-      { text: '10' },
-      {
-        type: 'sup',
-        children: [{ text: '2' }],
-      },
-    ]);
+    expect(cell.value).toHaveLength(2);
+    expect(cell.value[0]).toEqual({
+      type: 'span',
+      children: [{ text: '10' }],
+    });
+    expect(cell.value[1]).toEqual({
+      type: 'span',
+      children: [
+        {
+          type: 'sup',
+          children: [{ text: '2' }],
+        },
+      ],
+    });
   });
 });
 
@@ -744,11 +762,48 @@ describe('slateTableBlock processing a table with a div', () => {
     '<table><tr><td><div><strong>text</strong></div></td></tr></table>',
   );
 
-  test('will remove the div', () => {
+  test('will replace the div with a paragraph', () => {
     const result = slateTableBlock(elem);
     const cell = result.table.rows[0].cells[0];
     expect(cell.value).toEqual([
-      { type: 'strong', children: [{ text: 'text' }] },
+      {
+        type: 'span',
+        children: [{ type: 'strong', children: [{ text: 'text' }] }],
+      },
     ]);
+  });
+});
+
+describe('slateTableBlock parsing table with bold text', () => {
+  const elem = elementFromString(
+    '<table class="plain">\n<tbody>\n<tr><td><b>Text1</b></td></tr>\n</tbody>\n</table>',
+  );
+  test('returns valid result with the correct children', () => {
+    const block = slateTableBlock(elem);
+    expect(block['@type']).toEqual('slateTable');
+    const rows = block['table']['rows'];
+    expect(rows).toHaveLength(1);
+    const cells = rows[0]['cells'];
+    expect(cells).toHaveLength(1);
+    const value = cells[0]['value'][0];
+    expect(value['type']).toEqual('span');
+    expect(value['children'][0]['type']).toEqual('strong');
+  });
+});
+
+describe('slateTableBlock parsing table with line break', () => {
+  const elem = elementFromString(
+    '<table class="plain">\n<tbody>\n<tr><td><br/>Text</td></tr>\n</tbody>\n</table>',
+  );
+  test('returns valid result with the correct children', () => {
+    const block = slateTableBlock(elem);
+    expect(block['@type']).toEqual('slateTable');
+    const rows = block['table']['rows'];
+    expect(rows).toHaveLength(1);
+    const cells = rows[0]['cells'];
+    expect(cells).toHaveLength(1);
+    const value = cells[0]['value'][0];
+    expect(value['type']).toEqual('span');
+    expect(value['children'][0]['text']).toEqual('\n');
   });
 });

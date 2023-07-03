@@ -3,6 +3,8 @@ const { JSDOM } = jsdom;
 const DOMParser = new JSDOM().window.DOMParser;
 const parser = new DOMParser();
 
+const TEXT_NODE = 3;
+
 const elementFromString = (value) => {
   const elem = parser.parseFromString(value, 'text/html').body.firstChild;
   return elem;
@@ -51,4 +53,13 @@ const inlineElements = [
 
 const isGlobalInline = (tagName) => inlineElements.includes(tagName);
 
-export { elementFromString, isWhitespace, isGlobalInline, groupInlineNodes };
+const isInline = (n) =>
+  n.nodeType === TEXT_NODE || isGlobalInline(n.tagName.toLowerCase());
+
+export {
+  elementFromString,
+  isInline,
+  isWhitespace,
+  isGlobalInline,
+  groupInlineNodes,
+};

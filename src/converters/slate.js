@@ -290,7 +290,12 @@ const slateTableBlock = (elem) => {
         for (const cell of tchild.children) {
           const cellType = cell.tagName === 'TD' ? 'data' : 'header';
           const cellValue = deserializeChildren(cell);
-          cells.push(createCell(cellType, cellValue));
+          const elements = cellValue.map((element) =>
+            isInline(element)
+              ? jsx('element', { type: 'span' }, [element])
+              : element,
+          );
+          cells.push(createCell(cellType, elements));
         }
         rows.push({ key: getId(), cells });
       }
