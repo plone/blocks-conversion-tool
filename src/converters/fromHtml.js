@@ -4,6 +4,7 @@ import { draftTableBlock, draftTextBlock } from './draftjs.js';
 import { slateTableBlock, slateTextBlock } from './slate.js';
 import {
   groupInlineNodes,
+  isInline,
   isWhitespace,
   isGlobalInline,
 } from '../helpers/dom.js';
@@ -88,9 +89,6 @@ const skipCommentsAndWhitespace = (elements) => {
       ),
   );
 };
-
-const isInline = (n) =>
-  n.nodeType === TEXT_NODE || isGlobalInline(n.tagName.toLowerCase());
 
 const extractElementsWithConverters = (el, defaultTextBlock, href) => {
   const result = [];
