@@ -1,3 +1,10 @@
+### [0.4.8](https://github.com/plone/blocks-conversion-tool/compare/0.4.7...0.4.8) (2023-07-03)
+
+
+### Bug Fixes
+
+* Table cell parsing (Fixes [#31](https://github.com/plone/blocks-conversion-tool/issues/31)) ([0500c3d](https://github.com/plone/blocks-conversion-tool/commit/0500c3d29fb9042f7baef79f122dbb5b583d82c5))
+
 ### [0.4.7](https://github.com/plone/blocks-conversion-tool/compare/0.4.6...0.4.7) (2023-06-06)
 
 
