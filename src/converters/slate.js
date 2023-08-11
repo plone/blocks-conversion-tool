@@ -132,6 +132,8 @@ const blockTagDeserializer = (tagname) => (el) => {
     children = [{ text: '' }];
   }
 
+  if (tagname === 'p' && el.className === 'callout')
+    return jsx('element', { type: 'callout' }, children);
   return jsx('element', { type: tagname }, children);
 };
 
