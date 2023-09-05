@@ -613,6 +613,28 @@ describe('slateTextBlock processing a hr tag', () => {
   });
 });
 
+describe('slateTextBlock processing a callout', () => {
+  const text = 'This is a callout';
+  const elem = elementFromString(`<p class="callout">${text}</p>`);
+
+  test('will have @type as slate', () => {
+    const result = slateTextBlock(elem);
+    expect(result['@type']).toBe('slate');
+  });
+
+  test('will have content of p element for plaintext', () => {
+    const result = slateTextBlock(elem);
+    expect(result.plaintext).toBe(text);
+  });
+
+  test('will have a nested structure in the value', () => {
+    const result = slateTextBlock(elem);
+    const valueElement = result.value[0];
+    expect(valueElement['type']).toBe('callout');
+    expect(valueElement['children'][0]['text']).toBe(text);
+  });
+});
+
 describe('slateTableBlock processing a simple table', () => {
   const elem = elementFromString('<table><tr><td>A value</td></tr></table>');
 
