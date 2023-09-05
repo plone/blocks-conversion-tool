@@ -658,7 +658,7 @@ describe('slateTextBlock processing an empty callout', () => {
   });
 });
 
-describe('slateTextBlock processing a non-callout parapgraph', () => {
+describe('slateTextBlock processing a non-callout paragraph', () => {
   const text = 'This is NOT a callout';
   const elem = elementFromString(`<p>${text}</p>`);
 
