@@ -1,3 +1,15 @@
+## [0.5.0](https://github.com/plone/blocks-conversion-tool/compare/0.4.8...0.5.0) (2023-09-06)
+
+
+### Features
+
+* Pass all data attributes through to image block ([#34](https://github.com/plone/blocks-conversion-tool/issues/34)) ([1bc9aff](https://github.com/plone/blocks-conversion-tool/commit/1bc9aff28ac93d508684f94248ab59d12e5ed13d))
+
+
+### Bug Fixes
+
+* Convert paragraphs with callout class to slate ([#33](https://github.com/plone/blocks-conversion-tool/issues/33)) ([30f5e11](https://github.com/plone/blocks-conversion-tool/commit/30f5e1198e425897322fc653b6067c72fe6ecf49))
+
 ### [0.4.8](https://github.com/plone/blocks-conversion-tool/compare/0.4.7...0.4.8) (2023-07-03)
 
 
