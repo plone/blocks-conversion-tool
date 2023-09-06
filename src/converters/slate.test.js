@@ -613,6 +613,84 @@ describe('slateTextBlock processing a hr tag', () => {
   });
 });
 
+describe('slateTextBlock processing a callout', () => {
+  const text = 'This is a callout';
+  const elem = elementFromString(`<p class="callout">${text}</p>`);
+
+  test('will have @type as slate', () => {
+    const result = slateTextBlock(elem);
+    expect(result['@type']).toBe('slate');
+  });
+
+  test('will have content of p element for plaintext', () => {
+    const result = slateTextBlock(elem);
+    expect(result.plaintext).toBe(text);
+  });
+
+  test('will have a nested structure in the value', () => {
+    const result = slateTextBlock(elem);
+    const valueElement = result.value[0];
+    /* important: type should be callout, not p */
+    expect(valueElement['type']).toBe('callout');
+    expect(valueElement['children'][0]['text']).toBe(text);
+  });
+});
+
+describe('slateTextBlock processing an empty callout', () => {
+  const elem = elementFromString(`<p class="callout"></p>`);
+
+  test('will have @type as slate', () => {
+    const result = slateTextBlock(elem);
+    expect(result['@type']).toBe('slate');
+  });
+
+  test('will have content of p element for plaintext', () => {
+    const result = slateTextBlock(elem);
+    expect(result.plaintext).toBe('');
+  });
+
+  test('will have a nested structure in the value', () => {
+    const result = slateTextBlock(elem);
+    const valueElement = result.value[0];
+    /* important: type should be callout, not p */
+    expect(valueElement['type']).toBe('callout');
+    expect(valueElement['children'][0]['text']).toBe('');
+  });
+});
+
+describe('slateTextBlock processing a non-callout paragraph', () => {
+  const text = 'This is NOT a callout';
+  const elem = elementFromString(`<p>${text}</p>`);
+
+  test('will have @type as slate', () => {
+    const result = slateTextBlock(elem);
+    expect(result['@type']).toBe('slate');
+  });
+
+  test('will have content of p element for plaintext', () => {
+    const result = slateTextBlock(elem);
+    expect(result.plaintext).toBe(text);
+  });
+
+  test('will have a nested structure in the value', () => {
+    const result = slateTextBlock(elem);
+    const valueElement = result.value[0];
+    /* important: type should be p, not callout */
+    expect(valueElement['type']).toBe('p');
+    expect(valueElement['children'][0]['text']).toBe(text);
+  });
+
+  const elem2 = elementFromString(
+    `<p class="anyotherclass">Paragraph with any other class name</p>`,
+  );
+  test('will have a nested structure in the value', () => {
+    const result = slateTextBlock(elem2);
+    const valueElement = result.value[0];
+    /* important: type should be p, not callout */
+    expect(valueElement['type']).toBe('p');
+  });
+});
+
 describe('slateTableBlock processing a simple table', () => {
   const elem = elementFromString('<table><tr><td>A value</td></tr></table>');
 
