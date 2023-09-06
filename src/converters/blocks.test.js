@@ -80,4 +80,12 @@ describe('imageBlock processing', () => {
       '../resolveuid/7c6a1b0a0d2f40ffb6a4c73fd67b185d',
     );
   });
+  test('Image with data attributes', () => {
+    const elem = elementFromString(
+      '<img src="../resolveuid/7c6a1b0a0d2f40ffb6a4c73fd67b185d" title="A Picture" alt="Picture of a person" data-align="wide">',
+    );
+    const result = imageBlock(elem);
+    expect(result['@type']).toBe('image');
+    expect(result['align']).toBe('wide');
+  });
 });

@@ -22,10 +22,6 @@ const imageBlock = (elem, href) => {
     ];
   }
 
-  if (elem.dataset.href != null) {
-    block.href = elem.dataset.href;
-  }
-
   switch (alignFromClassName(elem.className)) {
     case 'left':
       block.align = 'left';
@@ -56,6 +52,12 @@ const imageBlock = (elem, href) => {
         break;
     }
   }
+
+  // pass through data attributes to block data
+  for (const [k, v] of Object.entries(elem.dataset)) {
+    block[k] = v;
+  }
+
   return block;
 };
 
