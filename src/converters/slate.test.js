@@ -885,3 +885,45 @@ describe('slateTableBlock parsing table with line break', () => {
     expect(value['children'][0]['text']).toEqual('\n');
   });
 });
+
+describe('slateTableBlock parsing ui table with settings classes', () => {
+  const elem = elementFromString(
+    '<table class="ui celled fixed striped very basic compact table"><tbody class=""><tr class=""><th class=""><p>Vorname</p></th><th class=""><p>Nachname</p></th></tr><tr class=""><td class=""><p>Jerry</p></td><td class=""><p>Smith</p></td></tr><tr class=""><td class=""><p>Morty</p></td><td class=""><p>Smith</p></td></tr><tr class=""><td class=""><p>Rick</p></td><td class=""><p>Sanchez</p></td></tr></tbody></table>',
+  );
+  test('returns valid result with the correct settings', () => {
+    const block = slateTableBlock(elem);
+    expect(block['@type']).toEqual('slateTable');
+    const table = block['table'];
+    const rows = table['rows'];
+    expect(rows).toHaveLength(4);
+    // we do not expect the default settings
+    expect(table.basic).toBeTruthy();
+    expect(table.celled).toBeTruthy();
+    expect(table.compact).toBeTruthy();
+    expect(table.fixed).toBeTruthy();
+    expect(table.striped).toBeTruthy();
+    // should not be affected anyways
+    expect(table.inverted).toBeFalsy();
+  });
+});
+
+describe('slateTableBlock parsing non-ui table with settings classes', () => {
+  const elem = elementFromString(
+    '<table class="celled fixed striped very basic compact"><tbody class=""><tr class=""><th class=""><p>Vorname</p></th><th class=""><p>Nachname</p></th></tr><tr class=""><td class=""><p>Jerry</p></td><td class=""><p>Smith</p></td></tr><tr class=""><td class=""><p>Morty</p></td><td class=""><p>Smith</p></td></tr><tr class=""><td class=""><p>Rick</p></td><td class=""><p>Sanchez</p></td></tr></tbody></table>',
+  );
+  test('returns valid result with the correct settings', () => {
+    const block = slateTableBlock(elem);
+    expect(block['@type']).toEqual('slateTable');
+    const table = block['table'];
+    const rows = table['rows'];
+    expect(rows).toHaveLength(4);
+    // we expect the default settings
+    expect(table.basic).toBeFalsy();
+    expect(table.celled).toBeTruthy();
+    expect(table.compact).toBeFalsy();
+    expect(table.fixed).toBeTruthy();
+    expect(table.striped).toBeFalsy();
+    // should not be affected anyways
+    expect(table.inverted).toBeFalsy();
+  });
+});

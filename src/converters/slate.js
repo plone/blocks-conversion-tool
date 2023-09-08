@@ -304,6 +304,23 @@ const slateTableBlock = (elem) => {
     }
   }
   block.table = createTable(rows);
+
+  const classes = elem.className.split(' ');
+  if (
+    classes.length > 0 &&
+    classes.includes('ui') &&
+    classes.includes('table')
+  ) {
+    // if table element has the classes "ui" and "table" we assume
+    // further settings-relevant classes were set (or not set) explicitly,
+    // so we set settings based on those classes, instead of using the defaults
+    const toCheck = ['basic', 'celled', 'compact', 'fixed', 'striped'];
+    for (const c of toCheck) {
+      if (classes.includes(c)) block.table[c] = true;
+      else block.table[c] = false;
+    }
+  }
+
   return block;
 };
 
