@@ -316,8 +316,7 @@ const slateTableBlock = (elem) => {
     // so we set settings based on those classes, instead of using the defaults
     const toCheck = ['basic', 'celled', 'compact', 'fixed', 'striped'];
     for (const c of toCheck) {
-      if (classes.includes(c)) block.table[c] = true;
-      else block.table[c] = false;
+      block.table[c] = classes.includes(c);
     }
   }
 
