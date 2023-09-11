@@ -1,3 +1,16 @@
+## [0.7.0](https://github.com/plone/blocks-conversion-tool/compare/0.5.0...0.7.0) (2023-09-11)
+
+
+### Features
+
+* Import relevant slateTable settings for HTML ui-tables ([#35](https://github.com/plone/blocks-conversion-tool/issues/35)) ([00eaea4](https://github.com/plone/blocks-conversion-tool/commit/00eaea4ec1bcbec38bf96157a330df543e8e4803))
+
+
+### Maintenance
+
+* Fix formatting ([e8579ab](https://github.com/plone/blocks-conversion-tool/commit/e8579abbefadf05c461ea6166d29e15cd6ecee95))
+* Use version 0.6.0 as base ([42e9ab2](https://github.com/plone/blocks-conversion-tool/commit/42e9ab2cafa5c6e7b3f35254e3e074c36b31ca4d))
+
 ## [0.5.0](https://github.com/plone/blocks-conversion-tool/compare/0.4.8...0.5.0) (2023-09-06)
 
 
