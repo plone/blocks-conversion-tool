@@ -20,8 +20,6 @@ const deserializeChildren = (parent) =>
     .flat()
     .filter((x) => x);
 
-const createEmptyParagraph = () => jsx('element', { type: 'p' }, []);
-
 const isInline = (n) =>
   typeof n === 'string' ||
   Text.isText(n) ||
@@ -111,11 +109,9 @@ const blockTagDeserializer = (tagname) => (el) => {
     children.length > 0 &&
     typeof children[0] === 'string'
   ) {
-    // TODO: should here be handled the cases when there are more strings in
-    // `children` or when there are besides strings other types of nodes too?
-    const p = createEmptyParagraph();
-    p.children[0].text = children[0];
-    children = [p];
+    const div = jsx('element', { type: 'div' }, []);
+    div.children[0].text = children[0];
+    children = [div];
   }
 
   const hasBlockChild = children.filter((n) => !isInline(n)).length > 0;
@@ -265,7 +261,7 @@ const createCell = (type, value) => {
   return {
     key: getId(),
     type: type,
-    value: jsx('fragment', {}, value),
+    value: jsx('fragment', {}, jsx('element', { type: 'div' }, value)),
   };
 };
 
@@ -302,9 +298,7 @@ const slateTableBlock = (elem) => {
             */
             let emptyHeaderCells = [];
             for (let i = 0; i < tchild.children.length; i++)
-              emptyHeaderCells.push(
-                createCell('header', [jsx('element', { type: 'p' }, [''])]),
-              );
+              emptyHeaderCells.push(createCell('header', ['']));
             rows.push({ key: getId(), cells: emptyHeaderCells });
             hideHeaders = true;
           }
@@ -313,12 +307,7 @@ const slateTableBlock = (elem) => {
         for (const cell of tchild.children) {
           const cellType = cell.tagName === 'TD' ? 'data' : 'header';
           const cellValue = deserializeChildren(cell);
-          const elements = cellValue.map((element) =>
-            isInline(element)
-              ? jsx('element', { type: 'span' }, [element])
-              : element,
-          );
-          cells.push(createCell(cellType, elements));
+          cells.push(createCell(cellType, cellValue));
         }
         rows.push({ key: getId(), cells });
       }
