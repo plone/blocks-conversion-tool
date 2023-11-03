@@ -1,3 +1,16 @@
+### [0.7.1](https://github.com/plone/blocks-conversion-tool/compare/0.7.0...0.7.1) (2023-11-03)
+
+
+### Bug Fixes
+
+* Fix html2slate for tables without headers ([#37](https://github.com/plone/blocks-conversion-tool/issues/37)) ([f92f5c9](https://github.com/plone/blocks-conversion-tool/commit/f92f5c98cfd78cefa5916b784772b57898afa956))
+* Wrap td contents in div instead of span ([#38](https://github.com/plone/blocks-conversion-tool/issues/38)) ([ae31295](https://github.com/plone/blocks-conversion-tool/commit/ae3129562c4e0f269a92f0a119f48dcc2487772c))
+
+
+### Maintenance
+
+* List files to include for npm package instead of files to exclude ([#39](https://github.com/plone/blocks-conversion-tool/issues/39)) ([f14fa2e](https://github.com/plone/blocks-conversion-tool/commit/f14fa2e85fea25c406b50644f15414032457535c))
+
 ## [0.7.0](https://github.com/plone/blocks-conversion-tool/compare/0.5.0...0.7.0) (2023-09-11)
 
 
