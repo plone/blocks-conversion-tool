@@ -284,10 +284,31 @@ const slateTableBlock = (elem) => {
   block['@type'] = 'slateTable';
   const children = elem.children;
   const rows = [];
+  let hideHeaders = false;
+  let isFirstRow = true;
   // recursive search for reconstructing table
   for (const table of children) {
     for (const tchild of table.children) {
       if (tchild.tagName === 'TR') {
+        if (isFirstRow) {
+          isFirstRow = false;
+          if (
+            tchild.children.length > 0 &&
+            tchild.children[0].tagName !== 'TH'
+          ) {
+            /* if first cell is not a TH, we assume we have a table without header.
+               so we add an empty header row and hide it via `hideHeaders`.
+               (otherwise the first row would appear as header what might no be expected)
+            */
+            let emptyHeaderCells = [];
+            for (let i = 0; i < tchild.children.length; i++)
+              emptyHeaderCells.push(
+                createCell('header', [jsx('element', { type: 'p' }, [''])]),
+              );
+            rows.push({ key: getId(), cells: emptyHeaderCells });
+            hideHeaders = true;
+          }
+        }
         const cells = [];
         for (const cell of tchild.children) {
           const cellType = cell.tagName === 'TD' ? 'data' : 'header';
@@ -304,6 +325,7 @@ const slateTableBlock = (elem) => {
     }
   }
   block.table = createTable(rows);
+  if (hideHeaders) block.table['hideHeaders'] = true;
 
   const classes = elem.className.split(' ');
   if (
