@@ -306,7 +306,8 @@ const slateTableBlock = (elem) => {
         const cells = [];
         for (const cell of tchild.children) {
           const cellType = cell.tagName === 'TD' ? 'data' : 'header';
-          const cellValue = deserializeChildren(cell);
+          let cellValue = deserializeChildren(cell);
+          if (!cellValue.length) cellValue = [''];
           cells.push(createCell(cellType, cellValue));
         }
         rows.push({ key: getId(), cells });
