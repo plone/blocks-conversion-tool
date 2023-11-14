@@ -509,6 +509,14 @@ describe('convertFromHTML parsing image', () => {
       title: '',
       url: 'image.jpeg',
     });
+    expect(result[1].table.rows[0].cells[0].type).toEqual('header');
+    expect(result[1].table.rows[0].cells[0].value).toEqual([
+      { type: 'div', children: [{ text: '' }] },
+    ]);
+    expect(result[1].table.rows[1].cells[0].type).toEqual('data');
+    expect(result[1].table.rows[1].cells[0].value).toEqual([
+      { type: 'div', children: [{ text: '' }] },
+    ]);
   });
 });
 
