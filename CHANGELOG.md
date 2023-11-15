@@ -1,3 +1,10 @@
+### [0.7.2](https://github.com/plone/blocks-conversion-tool/compare/0.7.1...0.7.2) (2023-11-15)
+
+
+### Bug Fixes
+
+* Fix an edge case with empty table cells ([#40](https://github.com/plone/blocks-conversion-tool/issues/40)) ([04ac42a](https://github.com/plone/blocks-conversion-tool/commit/04ac42a79365194e024a67edd819d65eeea5f4f0))
+
 ### [0.7.1](https://github.com/plone/blocks-conversion-tool/compare/0.7.0...0.7.1) (2023-11-03)
 
 
