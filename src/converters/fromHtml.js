@@ -41,6 +41,7 @@ const elementsShouldHaveText = [
   'STRONG',
   'SUB',
   'SUP',
+  'TABLE',
   'U',
 ];
 
@@ -111,7 +112,9 @@ const extractElementsWithConverters = (el, defaultTextBlock, href) => {
     if (parent) {
       parent.removeChild(el);
     }
-    result.push(blockFromElement(el, defaultTextBlock, href));
+    if (shouldKeepWrapper(el)) {
+      result.push(blockFromElement(el, defaultTextBlock, href));
+    }
   }
 
   return result;
@@ -145,10 +148,9 @@ const convertFromHTML = (input, defaultTextBlock) => {
   for (const el of elements) {
     const children = el.childNodes;
     const href = el.getAttribute('href');
-    let keepWrapper = shouldKeepWrapper(el);
     for (const child of children) {
       // With children nodes, we keep the wrapper only
-      // if at least one child is not  in elementsWithConverters
+      // if at least one child is not in elementsWithConverters
       const tmpResult = extractElementsWithConverters(
         child,
         defaultTextBlock,
@@ -158,7 +160,7 @@ const convertFromHTML = (input, defaultTextBlock) => {
         result.push(...tmpResult);
       }
     }
-    if (keepWrapper) {
+    if (shouldKeepWrapper(el)) {
       result.push(blockFromElement(el, defaultTextBlock));
     }
   }
