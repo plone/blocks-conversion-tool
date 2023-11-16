@@ -1,3 +1,10 @@
+## [0.8.0](https://github.com/plone/blocks-conversion-tool/compare/0.7.2...0.8.0) (2023-11-16)
+
+
+### Features
+
+* Drop empty tables ([#41](https://github.com/plone/blocks-conversion-tool/issues/41)) ([7b885e2](https://github.com/plone/blocks-conversion-tool/commit/7b885e2822499a570d757aeb0a64320e63fba190))
+
 ### [0.7.2](https://github.com/plone/blocks-conversion-tool/compare/0.7.1...0.7.2) (2023-11-15)
 
 
