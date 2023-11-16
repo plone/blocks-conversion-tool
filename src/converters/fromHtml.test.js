@@ -319,7 +319,7 @@ describe('convertFromHTML parsing div with br tags', () => {
 describe('convertFromHTML parsing whitespace inside unknown tags', () => {
   const html = '<center>\n<strong>text</strong>\n</center>';
 
-  describe('returns valid result preserving the whitespace', () => {
+  test('returns valid result preserving the whitespace', () => {
     const result = convertFromHTML(html, 'slate');
     expect(result).toHaveLength(1);
     expect(result[0].value).toEqual([
@@ -333,7 +333,7 @@ describe('convertFromHTML parsing whitespace inside unknown tags', () => {
 describe('convertFromHTML parsing image', () => {
   // https://github.com/plone/blocks-conversion-tool/issues/21
 
-  describe('on its own', () => {
+  test('on its own', () => {
     const html = '<img src="image.jpeg">';
 
     const result = convertFromHTML(html, 'slate');
@@ -350,7 +350,7 @@ describe('convertFromHTML parsing image', () => {
     ]);
   });
 
-  describe('inside a p element', () => {
+  test('inside a p element', () => {
     const html = '<p><img src="image.jpeg"></p>';
 
     const result = convertFromHTML(html, 'slate');
@@ -367,7 +367,7 @@ describe('convertFromHTML parsing image', () => {
     ]);
   });
 
-  describe('inside a span element', () => {
+  test('inside a span element', () => {
     const html = '<p><span><img src="image.jpeg"></span></p>';
 
     const result = convertFromHTML(html, 'slate');
@@ -384,7 +384,7 @@ describe('convertFromHTML parsing image', () => {
     ]);
   });
 
-  describe('inside a div element', () => {
+  test('inside a div element', () => {
     // https://github.com/plone/blocks-conversion-tool/issues/21#issuecomment-1455176066
     const html = '<div><img src="image.jpeg"></div>';
 
@@ -402,7 +402,7 @@ describe('convertFromHTML parsing image', () => {
     ]);
   });
 
-  describe('inside a nested div element', () => {
+  test('inside a nested div element', () => {
     // https://github.com/plone/blocks-conversion-tool/issues/21#issuecomment-1455176066
     const html = '<div><div><img src="image.jpeg"></div></div>';
 
@@ -420,7 +420,7 @@ describe('convertFromHTML parsing image', () => {
     ]);
   });
 
-  describe('inside a nested div element with line breaks', () => {
+  test('inside a nested div element with line breaks', () => {
     const html = `<div>
     <div>
     <p><span><img src="image.jpeg"  /></span></p>
@@ -440,7 +440,7 @@ describe('convertFromHTML parsing image', () => {
     });
   });
 
-  describe('inside a nested span element containing valid text', () => {
+  test('inside a nested span element containing valid text', () => {
     const html = '<p><span><img src="image.jpeg" />text</span></p>';
 
     const result = convertFromHTML(html, 'slate');
@@ -455,7 +455,7 @@ describe('convertFromHTML parsing image', () => {
     });
   });
 
-  describe('inside a nested span element, with a sibling containing valid text', () => {
+  test('inside a nested span element, with a sibling containing valid text', () => {
     const html =
       '<p><span><img src="image.jpeg" /></span><span>text</span></p>';
 
@@ -471,7 +471,7 @@ describe('convertFromHTML parsing image', () => {
     });
   });
 
-  describe('inside a nested link element should add the href property', () => {
+  test('inside a nested link element should add the href property', () => {
     const html =
       '<p><a href="https://plone.org"><img src="image.jpeg"></a></p>';
 
@@ -495,12 +495,12 @@ describe('convertFromHTML parsing image', () => {
     ]);
   });
 
-  describe('inside a table', () => {
+  test('inside a table', () => {
     const html =
       '<table><tr><td><div><img src="image.jpeg" /></div></td></tr></table>';
 
     const result = convertFromHTML(html, 'slate');
-    expect(result).toHaveLength(2);
+    expect(result).toHaveLength(1);
     expect(result[0]).toEqual({
       '@type': 'image',
       align: 'center',
@@ -509,19 +509,11 @@ describe('convertFromHTML parsing image', () => {
       title: '',
       url: 'image.jpeg',
     });
-    expect(result[1].table.rows[0].cells[0].type).toEqual('header');
-    expect(result[1].table.rows[0].cells[0].value).toEqual([
-      { type: 'div', children: [{ text: '' }] },
-    ]);
-    expect(result[1].table.rows[1].cells[0].type).toEqual('data');
-    expect(result[1].table.rows[1].cells[0].value).toEqual([
-      { type: 'div', children: [{ text: '' }] },
-    ]);
   });
 });
 
 describe('convertFromHTML parsing nested tags', () => {
-  describe('with an image and without line breaks', () => {
+  test('with an image and without line breaks', () => {
     const html = `<div>
     <div><p><span><img src="image.jpg"  /></span></p></div>
     <p ><span><a href="link"><span><span><span>Text</span></span></span></a>, </span><a href="link"><span>text</span></a>, <a href="link"><span><span>text</span></span> </a></p>
@@ -529,7 +521,7 @@ describe('convertFromHTML parsing nested tags', () => {
     const result = convertFromHTML(html, 'slate');
     expect(result).toHaveLength(2);
   });
-  describe('with an image and with an additional line break', () => {
+  test('with an image and with an additional line break', () => {
     const html = `<div>
     <div>
     <p><span><img src="image.jpg"  /></span></p>
@@ -539,7 +531,7 @@ describe('convertFromHTML parsing nested tags', () => {
     const result = convertFromHTML(html, 'slate');
     expect(result).toHaveLength(2);
   });
-  describe('with paragraph, table and image blocks', () => {
+  test('with paragraph, table and image blocks', () => {
     const html = `<p>
     <table>
     <tbody>
@@ -552,11 +544,10 @@ describe('convertFromHTML parsing nested tags', () => {
     </table>
     </p>`;
     const result = convertFromHTML(html, 'slate');
-    expect(result).toHaveLength(2);
+    expect(result).toHaveLength(1);
     expect(result[0]['@type']).toBe('image');
-    expect(result[1]['@type']).toBe('slateTable');
   });
-  describe('with paragraph, table and image blocks', () => {
+  test('with paragraph, table and image blocks', () => {
     const html = `<div>
     <div>
     <p>
@@ -574,11 +565,10 @@ describe('convertFromHTML parsing nested tags', () => {
     <p></p>
     </div>`;
     const result = convertFromHTML(html, 'slate');
-    expect(result).toHaveLength(2);
+    expect(result).toHaveLength(1);
     expect(result[0]['@type']).toBe('image');
-    expect(result[1]['@type']).toBe('slateTable');
   });
-  describe('with paragraph, table, image blocks, and other paragraph', () => {
+  test('with paragraph, table, image blocks, and other paragraph', () => {
     const html = `<div>
     <p>
     <table>
@@ -595,9 +585,23 @@ describe('convertFromHTML parsing nested tags', () => {
     <p>A text</p>
     </div>`;
     const result = convertFromHTML(html, 'slate');
-    expect(result).toHaveLength(3);
+    expect(result).toHaveLength(2);
+    expect(result[0]['@type']).toBe('image');
+    expect(result[1]['@type']).toBe('slate');
+  });
+  test('with paragraph, and text and image in table', () => {
+    const html = `<p>
+    <table>
+    <tbody>
+    <tr>
+    <td>text in table<img src="image.png" /></td>
+    </tr>
+    </tbody>
+    </table>
+    </p>`;
+    const result = convertFromHTML(html, 'slate');
+    expect(result).toHaveLength(2);
     expect(result[0]['@type']).toBe('image');
     expect(result[1]['@type']).toBe('slateTable');
-    expect(result[2]['@type']).toBe('slate');
   });
 });
