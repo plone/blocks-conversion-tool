@@ -1,3 +1,10 @@
+### [0.8.1](https://github.com/plone/blocks-conversion-tool/compare/0.8.0...0.8.1) (2023-11-20)
+
+
+### Bug Fixes
+
+* Fixed a bug where some nodes could be skipped after converting an element to a block. ([#42](https://github.com/plone/blocks-conversion-tool/issues/42)) ([03f7b20](https://github.com/plone/blocks-conversion-tool/commit/03f7b20403dd72a9ff3d081afdf41d3348e8d9f6))
+
 ## [0.8.0](https://github.com/plone/blocks-conversion-tool/compare/0.7.2...0.8.0) (2023-11-16)
 
 
