@@ -350,6 +350,30 @@ describe('convertFromHTML parsing image', () => {
     ]);
   });
 
+  test('inside a block element with another image', () => {
+    const html = '<div><img src="image1.jpg"><img src="image2.jpg"></div>';
+
+    const result = convertFromHTML(html, 'slate');
+    expect(result).toEqual([
+      {
+        '@type': 'image',
+        align: 'center',
+        alt: '',
+        size: 'l',
+        title: '',
+        url: 'image1.jpg',
+      },
+      {
+        '@type': 'image',
+        align: 'center',
+        alt: '',
+        size: 'l',
+        title: '',
+        url: 'image2.jpg',
+      },
+    ]);
+  });
+
   test('inside a p element', () => {
     const html = '<p><img src="image.jpeg"></p>';
 

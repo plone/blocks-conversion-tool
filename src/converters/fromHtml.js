@@ -97,7 +97,7 @@ const extractElementsWithConverters = (el, defaultTextBlock, href) => {
     href = el.getAttribute('href');
   }
   // First, traverse all childNodes
-  for (const child of el.childNodes) {
+  for (const child of Array.from(el.childNodes)) {
     const tmpResult = extractElementsWithConverters(
       child,
       defaultTextBlock,
@@ -146,7 +146,7 @@ const convertFromHTML = (input, defaultTextBlock) => {
 
   // convert to blocks
   for (const el of elements) {
-    const children = el.childNodes;
+    const children = Array.from(el.childNodes);
     const href = el.getAttribute('href');
     for (const child of children) {
       // With children nodes, we keep the wrapper only
