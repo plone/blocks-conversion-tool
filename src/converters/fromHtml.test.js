@@ -537,6 +537,23 @@ describe('convertFromHTML parsing image', () => {
 });
 
 describe('convertFromHTML parsing nested tags', () => {
+  test('with a span inside a link', () => {
+    const html = '<a href="link"><span>text</span></a>';
+    const result = convertFromHTML(html, 'slate');
+    expect(result).toEqual([
+      {
+        '@type': 'slate',
+        plaintext: 'text',
+        value: [
+          {
+            type: 'link',
+            data: { url: 'link', target: null, title: null },
+            children: [{ text: 'text' }],
+          },
+        ],
+      },
+    ]);
+  });
   test('with an image and without line breaks', () => {
     const html = `<div>
     <div><p><span><img src="image.jpg"  /></span></p></div>

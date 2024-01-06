@@ -92,7 +92,7 @@ const spanTagDeserializer = (el) => {
       // Handle Google Docs' <sup> formatting
       children = jsx('element', { type: 'sup' }, children);
     }
-    return jsx('element', { type: 'span' }, children);
+    return jsx('fragment', {}, children);
   }
 };
 

@@ -40,33 +40,19 @@ describe('slateTextBlock processing a paragraph', () => {
       );
     });
 
-    test('will have a nested structure in the value with 2 elements', () => {
+    test('will have a nested structure in the value', () => {
       const result = slateTextBlock(elem);
-      const valueElement = result.value[0];
-      expect(valueElement['type']).toBe('p');
-      expect(valueElement.children).toHaveLength(2);
-    });
-
-    test('will have a nested structure, and the first element of the value will be a p', () => {
-      const result = slateTextBlock(elem);
-      const valueElement = result.value[0].children[0];
-      expect(valueElement['type']).toBe('span');
-      expect(valueElement.children).toHaveLength(2);
-      expect(valueElement.children[0]['type']).toBe('strong');
-      expect(valueElement.children[0]['children'][0]['text']).toBe(
-        'Arrival by car:',
-      );
-      expect(valueElement.children[1]['text']).toContain(
-        '1 Autobahn network (East and West) easily accessible',
-      );
-    });
-
-    test('will have a nested structure, and the first element of the value will be a span', () => {
-      const result = slateTextBlock(elem);
-      const valueElement = result.value[0].children[1];
-      expect(valueElement['type']).toBe('span');
-      expect(valueElement.children).toHaveLength(1);
-      expect(valueElement.children[0]['text']).toBe('L5122 till Neidling ');
+      expect(result.value).toEqual([
+        {
+          type: 'p',
+          children: [
+            { type: 'strong', children: [{ text: 'Arrival by car:' }] },
+            {
+              text: ' A 1 Autobahn network (East and West) easily accessible from all directions (toll sticker - compulsory „Vignette“ - required on all motorways!) to St. Pölten then take the  L5122 till Neidling ',
+            },
+          ],
+        },
+      ]);
     });
   });
 
@@ -257,16 +243,13 @@ describe('slateTextBlock processing a span', () => {
   test('with a text value', () => {
     const elem = elementFromString('<span>Hello world!</span>');
     const result = slateTextBlock(elem);
-    const valueElement = result.value[0];
-    expect(valueElement['type']).toBe('span');
-    expect(valueElement['children'][0]['text']).toBe('Hello world!');
+    expect(result.value).toEqual([{ text: 'Hello world!' }]);
   });
 
   test('with an empty text value', () => {
     const elem = elementFromString('<span>\n</span>');
     const result = slateTextBlock(elem);
-    const valueElement = result.value[0];
-    expect(valueElement['text']).toBe(' ');
+    expect(result.value).toEqual([{ text: ' ' }]);
   });
 
   test('without children nodes will return undefined', () => {
@@ -281,12 +264,11 @@ describe('slateTextBlock processing a span', () => {
       '<span>Hello <strong>world</strong>!</span>',
     );
     const result = slateTextBlock(elem);
-    const valueElement = result.value[0];
-    expect(valueElement['type']).toBe('span');
-    expect(valueElement['children'][0]['text']).toBe('Hello ');
-    expect(valueElement['children'][1]['type']).toBe('strong');
-    expect(valueElement['children'][1]['children'][0]['text']).toBe('world');
-    expect(valueElement['children'][2]['text']).toBe('!');
+    expect(result.value).toEqual([
+      { text: 'Hello ' },
+      { type: 'strong', children: [{ text: 'world' }] },
+      { text: '!' },
+    ]);
   });
 
   test('with google docs style for sup', () => {
@@ -294,11 +276,9 @@ describe('slateTextBlock processing a span', () => {
       '<span style="vertical-align:sup">Hello world!</span>',
     );
     const result = slateTextBlock(elem);
-    const valueElement = result.value[0];
-    expect(valueElement['type']).toBe('span');
-    const supElement = valueElement.children[0];
-    expect(supElement['type']).toBe('sup');
-    expect(supElement['children'][0]['text']).toBe('Hello world!');
+    expect(result.value).toEqual([
+      { type: 'sup', children: [{ text: 'Hello world!' }] },
+    ]);
   });
 
   test('with google docs style for sub', () => {
@@ -306,21 +286,15 @@ describe('slateTextBlock processing a span', () => {
       '<span style="vertical-align:sub">Hello world!</span>',
     );
     const result = slateTextBlock(elem);
-    const valueElement = result.value[0];
-    expect(valueElement['type']).toBe('span');
-    const supElement = valueElement.children[0];
-    expect(supElement['type']).toBe('sub');
-    expect(supElement['children'][0]['text']).toBe('Hello world!');
+    expect(result.value).toEqual([
+      { type: 'sub', children: [{ text: 'Hello world!' }] },
+    ]);
   });
 
   test('inside another element with an empty value will drop empty span', () => {
     const elem = elementFromString('<p><span>Foo</span><span></span></p>');
     const result = slateTextBlock(elem);
-    const valueElement = result.value[0];
-    expect(valueElement['type']).toBe('p');
-    expect(valueElement['children']).toHaveLength(1);
-    expect(valueElement['children'][0]['type']).toBe('span');
-    expect(valueElement['children'][0]['children'][0]['text']).toBe('Foo');
+    expect(result.value).toEqual([{ type: 'p', children: [{ text: 'Foo' }] }]);
   });
 });
 
