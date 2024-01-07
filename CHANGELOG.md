@@ -1,3 +1,10 @@
+### [0.8.2](https://github.com/plone/blocks-conversion-tool/compare/0.8.1...0.8.2) (2024-01-07)
+
+
+### Bug Fixes
+
+* Avoid unnecessary spans ([#43](https://github.com/plone/blocks-conversion-tool/issues/43)) ([696eaf7](https://github.com/plone/blocks-conversion-tool/commit/696eaf7e55e2fcb09b4b026461745faf07d86719))
+
 ### [0.8.1](https://github.com/plone/blocks-conversion-tool/compare/0.8.0...0.8.1) (2023-11-20)
 
 
