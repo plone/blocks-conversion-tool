@@ -3,6 +3,7 @@ import cookieParser from 'cookie-parser';
 import logger from 'morgan';
 import indexRouter from './routes/index.js';
 import htmlRouter from './routes/html.js';
+import draftjsRouter from './routes/draftjs.js';
 
 const app = express();
 
@@ -13,5 +14,6 @@ app.use(cookieParser());
 
 app.use('/', indexRouter);
 app.use('/html', htmlRouter);
+app.use('/draftjs', draftjsRouter);
 
 export default app;
