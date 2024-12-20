@@ -646,3 +646,319 @@ describe('convertFromHTML parsing nested tags', () => {
     expect(result[1]['@type']).toBe('slateTable');
   });
 });
+
+describe('convertFromHTML parsing quote', () => {
+  test('on its own', () => {
+    const html =
+      '<blockquote><p><strong>Callout text with bold</strong></p></blockquote>';
+
+    const result = convertFromHTML(html, 'slate');
+    expect(result).toHaveLength(1);
+    expect(result).toEqual([
+      {
+        '@type': 'callout_block',
+        color: 'default',
+        icon: 'it-info-circle',
+        style: 'base',
+        text: [
+          {
+            children: [
+              {
+                children: [
+                  {
+                    text: 'Callout text with bold',
+                  },
+                ],
+                type: 'strong',
+              },
+            ],
+            type: 'p',
+          },
+        ],
+        title: '',
+      },
+    ]);
+  });
+});
+
+describe('convertFromHTML create callout_block block from quote tag', () => {
+  test('on its own', () => {
+    const html =
+      '<blockquote><strong>Callout text with bold</strong></blockquote>';
+
+    const result = convertFromHTML(html, 'slate');
+    expect(result).toHaveLength(1);
+    expect(result).toEqual([
+      {
+        '@type': 'callout_block',
+        style: 'base',
+        icon: 'it-info-circle',
+        title: '',
+        text: [
+          {
+            children: [
+              {
+                text: 'Callout text with bold',
+              },
+            ],
+            type: 'strong',
+          },
+        ],
+        color: 'default',
+      },
+    ]);
+  });
+});
+
+describe('convertFromHTML create slate block with proper css classes', () => {
+  test('on its own', () => {
+    const html =
+      '<p><a key="0" href="https://www.plone.org" dataelement="" class="btn btn-primary inline-link">xxx</a></p>';
+
+    const result = convertFromHTML(html, 'slate');
+    expect(result).toHaveLength(1);
+    expect(result).toEqual([
+      {
+        '@type': 'slate',
+        plaintext: 'xxx',
+        value: [
+          {
+            children: [
+              {
+                children: [
+                  {
+                    text: 'xxx',
+                  },
+                ],
+                data: {
+                  target: null,
+                  title: null,
+                  url: 'https://www.plone.org',
+                },
+                styleName: 'btn btn-primary inline-link',
+                type: 'link',
+              },
+            ],
+            type: 'p',
+          },
+        ],
+      },
+    ]);
+  });
+});
+
+describe('convertFromHTML create slate block with basic proper unordered list', () => {
+  test('on its own', () => {
+    const html = '<ul><li key=0>aaa</li><li key=1>bbb</li></ul>';
+
+    const result = convertFromHTML(html, 'slate');
+    expect(result).toHaveLength(1);
+    expect(result).toEqual([
+      {
+        '@type': 'slate',
+        plaintext: 'aaabbb',
+        value: [
+          {
+            children: [
+              {
+                children: [
+                  {
+                    text: 'aaa',
+                  },
+                ],
+                type: 'li',
+              },
+              {
+                children: [
+                  {
+                    text: 'bbb',
+                  },
+                ],
+                type: 'li',
+              },
+            ],
+            type: 'ul',
+          },
+        ],
+      },
+    ]);
+  });
+});
+
+describe('convertFromHTML create slate block with complex unordered list', () => {
+  test('on its own', () => {
+    const html =
+      '<ul><li key=0><strong>aaa</strong></li> <li key=1><a key="0" href="http://www.plone.org" data-element="">bbb</a></li></ul>';
+
+    const result = convertFromHTML(html, 'slate');
+    expect(result).toHaveLength(1);
+    expect(result).toEqual([
+      {
+        '@type': 'slate',
+        plaintext: 'aaa bbb',
+        value: [
+          {
+            children: [
+              {
+                children: [{ children: [{ text: 'aaa' }], type: 'strong' }],
+                type: 'li',
+              },
+              {
+                children: [
+                  {
+                    children: [{ text: 'bbb' }],
+                    data: {
+                      target: null,
+                      title: null,
+                      url: 'http://www.plone.org',
+                    },
+                    type: 'link',
+                  },
+                ],
+                type: 'li',
+              },
+            ],
+            type: 'ul',
+          },
+        ],
+      },
+    ]);
+  });
+});
+
+describe('convertFromHTML create slate block with basic proper ordered list', () => {
+  test('on its own', () => {
+    const html = '<ol><li key=0>aaa</li><li key=1>bbb</li></ol>';
+
+    const result = convertFromHTML(html, 'slate');
+    expect(result).toHaveLength(1);
+    expect(result).toEqual([
+      {
+        '@type': 'slate',
+        plaintext: 'aaabbb',
+        value: [
+          {
+            children: [
+              {
+                children: [
+                  {
+                    text: 'aaa',
+                  },
+                ],
+                type: 'li',
+              },
+              {
+                children: [
+                  {
+                    text: 'bbb',
+                  },
+                ],
+                type: 'li',
+              },
+            ],
+            type: 'ol',
+          },
+        ],
+      },
+    ]);
+  });
+});
+
+describe('convertFromHTML create slate block with complex ordered list', () => {
+  test('on its own', () => {
+    const html =
+      '<ol><li key=0><strong>aaa</strong></li> <li key=1><a key="0" href="http://www.plone.org" data-element="">bbb</a></li></ol>';
+
+    const result = convertFromHTML(html, 'slate');
+    expect(result).toHaveLength(1);
+    expect(result).toEqual([
+      {
+        '@type': 'slate',
+        plaintext: 'aaa bbb',
+        value: [
+          {
+            children: [
+              {
+                children: [{ children: [{ text: 'aaa' }], type: 'strong' }],
+                type: 'li',
+              },
+              {
+                children: [
+                  {
+                    children: [{ text: 'bbb' }],
+                    data: {
+                      target: null,
+                      title: null,
+                      url: 'http://www.plone.org',
+                    },
+                    type: 'link',
+                  },
+                ],
+                type: 'li',
+              },
+            ],
+            type: 'ol',
+          },
+        ],
+      },
+    ]);
+  });
+});
+
+describe('convertFromHTML create callout_block', () => {
+  test('on its own', () => {
+    const html = '<blockquote class="blockquote"><p>text</p></blockquote>';
+
+    const result = convertFromHTML(html, 'slate');
+    expect(result).toHaveLength(1);
+    expect(result).toEqual([
+      {
+        '@type': 'callout_block',
+        color: 'default',
+        icon: 'it-info-circle',
+        style: 'base',
+        text: [
+          {
+            children: [
+              {
+                text: 'text',
+              },
+            ],
+            type: 'p',
+          },
+        ],
+        title: '',
+      },
+    ]);
+  });
+});
+
+describe('convertFromHTML create slate block with blockquote simple', () => {
+  test('on its own', () => {
+    const html = '<blockquote>Testo</blockquote>';
+
+    const result = convertFromHTML(html, 'slate');
+    expect(result).toHaveLength(1);
+    expect(result).toEqual([
+      {
+        '@type': 'callout_block',
+        style: 'base',
+        icon: 'it-info-circle',
+        title: '',
+        text: [{ type: 'p', children: [{ text: 'Testo' }] }],
+        color: 'default',
+      },
+    ]);
+  });
+});
+
+// describe.only('prova', () => {
+//   test('on its own', () => {
+//     const html =
+//       '<blockquote><p><strong>Trasporto delle persone con difficoltà motorie ai seggi<br /></strong>Il Comune di Cavriago, in collaborazione con l’Associazione <strong>“NOI CON VOI”</strong>, organizza il trasporto delle persone disabili mediante il pulmino adibito appositamente a tale servizio. Il servizio verrà effettuato nei seguenti orari:<strong>SABATO 8 GIUGNO dalle 15.00 alle 17.00<br />,DOMENICA 9 GIUGNO dalle 10.00 alle 12.00.<br /></strong>Il trasporto dovrà essere prenotato direttamente all’associazione  al numero <strong>333 5383663</strong> (Ines).</p></blockquote>';
+
+//     const result = convertFromHTML(html, 'slate');
+//     expect(result).toHaveLength(1);
+//     expect(result).toEqual();
+//   });
+// });

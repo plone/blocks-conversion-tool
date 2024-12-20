@@ -1,5 +1,5 @@
 import jsdom from 'jsdom';
-import { iframeBlock, imageBlock, videoBlock } from './blocks.js';
+import { iframeBlock, imageBlock, videoBlock, calloutBlock } from './blocks.js';
 import { draftTableBlock, draftTextBlock } from './draftjs.js';
 import { slateTableBlock, slateTextBlock } from './slate.js';
 import {
@@ -73,6 +73,9 @@ const blockFromElement = (el, defaultTextBlock, href) => {
       break;
     case 'IFRAME':
       raw = iframeBlock(el);
+      break;
+    case 'BLOCKQUOTE':
+      raw = calloutBlock(el);
       break;
     default:
       raw = textBlock(el);

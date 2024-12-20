@@ -5,7 +5,7 @@ on:
       - '*'
 
 env:
-  IMAGE_NAME: plone/blocks-conversion-tool
+  IMAGE_NAME: redturtletech/blocks-conversion-tool
 
 jobs:
 

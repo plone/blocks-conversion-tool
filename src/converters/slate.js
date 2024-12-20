@@ -49,8 +49,11 @@ const simpleLinkDeserializer = (el) => {
       target: el.getAttribute('target'),
     },
   };
-
-  return jsx('element', attrs, children);
+  let block = jsx('element', attrs, children);
+  if (el.getAttribute('class')) {
+    block.styleName = el.getAttribute('class');
+  }
+  return block;
 };
 
 const bTagDeserializer = (el) => {
@@ -62,6 +65,7 @@ const bTagDeserializer = (el) => {
 
 const spanTagDeserializer = (el) => {
   const style = (el.getAttribute('style') || '').replace(/\s/g, '');
+  const className = el.getAttribute('class');
   let children = el.childNodes;
   if (children.length === 1) {
     const child = children[0];
@@ -92,7 +96,11 @@ const spanTagDeserializer = (el) => {
       // Handle Google Docs' <sup> formatting
       children = jsx('element', { type: 'sup' }, children);
     }
-    return jsx('fragment', {}, children);
+    const data = jsx('fragment', {}, children);
+    if (className === 'text-larger') {
+      data[0]['style-text-larger'] = true;
+    }
+    return data;
   }
 };
 

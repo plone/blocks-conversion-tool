@@ -168,6 +168,19 @@ describe('slateTextBlock processing a paragraph', () => {
   });
 });
 
+describe('slateTextBlock processing a simple span block', () => {
+  const elem = elementFromString('<span class="text-larger">large text</span>');
+
+  test('will have a formated block', () => {
+    const result = slateTextBlock(elem);
+    const valueElement = result.value[0];
+    expect(valueElement).toEqual({
+      'style-text-larger': true,
+      text: 'large text',
+    });
+  });
+});
+
 describe('slateTextBlock processing a simple pre block', () => {
   const elem = elementFromString(
     '<pre>Plone Foundation: https://plone.org/</pre>',
